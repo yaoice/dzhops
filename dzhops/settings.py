@@ -71,8 +71,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'dzhops',
         'USER': 'dzhops',
-        'PORT': 33066,
-        'HOST': '10.15.201.102',
+        'PORT': 3306,
+        'HOST': '172.16.214.102',
         'PASSWORD': 'dzhinternet',
     }
 }
@@ -118,9 +118,9 @@ TEMPLATE_DIRS = (
 
 # salt-api setting
 SALT_API = {
-    'url': 'http://10.15.201.102:18000/',
-    'user': 'zhaogb',
-    'password': 'dzhinternet'
+    'url': 'http://172.16.214.102:8888/',
+    'user': 'saltapi',
+    'password': '99cloud'
 }
 
 # log setting
