@@ -7,27 +7,34 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="description" content="DzhOPS(当你看到这个，我想告诉你的是，我根本就不会写前端!)">
     <meta name="author" content="Guibin">
-    <link rel="icon" href="/static/img/favicon.ico">
+    <link rel="icon" href="/static/img/favicon_99.ico">
 
     <title>{% block title %}{% endblock %}</title>
 
+    <!-- Bootstrap validator CSS -->
+    <link href="/static/bootstrap/3.3.4/css/bootstrapValidator.min.css" rel="stylesheet">
     <!-- Bootstrap core CSS -->
     <link href="/static/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
     <link href="/static/bootstrap/3.3.4/css/bootstrap-theme.min.css" rel="stylesheet">
+    
+    <!-- Jquery Wizard Plugin -->
+    <link href="/static/theme/jquery.wizard.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="/static/theme/dashboard.css" rel="stylesheet">
 
     <!--JavaScript-->
     <script src="/static/otherjs/jquery.min.js"></script>
+    <script src="/static/bootstrap/3.3.4/js/bootstrapValidator.min.js"></script>
     <script src="/static/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="/static/otherjs/jquery.wizard.js"></script>
     <script src="/static/otherjs/docs.min.js"></script>
+    <script src="/static/otherjs/dzhops.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="/static/otherjs/ie10-viewport-bug-workaround.js"></script>
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script type="text/javascript" async="" src="/static/otherjs/ga.js"></script><script type="text/javascript" charset="UTF-8" src="/static/otherjs/cloud.js"></script><script src="/static/otherjs/ie-emulation-modes-warning.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -48,7 +55,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'index' %}">移动终端自动化运维平台</a>
+          <img src="/static/img/ops-200-60.png"/>
+<!--         <a class="navbar-brand" href="{% url 'index' %}">OpsMaster</a>  -->
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">

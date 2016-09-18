@@ -40,6 +40,7 @@ class Catagory(models.Model):
         return u'%s %s' %(self.catagoryen, self.catagorycn)
 
 class HostList(models.Model):
+    uuid = models.CharField(max_length=60,  blank=True,verbose_name=u'UUID')
     ip = models.CharField(max_length=15,  blank=True,verbose_name=u'IP地址')
     hostname = models.CharField(max_length=30, verbose_name=u'主机名')
     minionid = models.CharField(max_length=60, verbose_name=u'MinionID')
