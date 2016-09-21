@@ -694,7 +694,7 @@ function createOpsConfig() {
 		var storage_mon_minions = "";
 		var storage_osd_minions = "";
 		var config_storage_install = "false";
-		var storage_backends = "";
+		var storage_backends = "file";
 		
 		var compute_minions_list = $('input[name="compute_minions"]:checked');
 		var controller_minions_list = $('input[name="controller_minions"]:checked');
@@ -1059,6 +1059,7 @@ function checkInsPro() {
                 	</div>');
 			}
 		})
+                setTimeout("checkInsPro()", 5000);
 	})
 }
 
