@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}认证信息-移动终端自动化运维平台{% endblock %}
+{% block title %}Auth Information-OpsMaster自动化运维平台{% endblock %}
 {% block nav %}
-    <li><a href="{% url 'index' %}"><i class="glyphicon glyphicon-dashboard"></i> 仪表盘</a></li>
-    <li><a href="{% url 'asset_list' %}"><i class="glyphicon glyphicon-th-list"></i> 主机列表</a></li>
-    <li><a href="{% url 'deploy' %}"><i class="glyphicon glyphicon-th-large"></i> SaltStack</a></li>
-    <li><a href="{% url 'repair_data' %}"><i class="glyphicon glyphicon-repeat"></i> 数据修复</a></li>
-    <li class="active"><a href="{% url 'keys_show' %}"><i class="glyphicon glyphicon-tags"></i> MinionKeys<span class="sr-only">(current)</span></a></li>
-    <li><a href="{% url 'record_list' %}"><i class="glyphicon glyphicon-floppy-disk"></i> 操作记录</a></li>
+<!--    <li><a href="{% url 'index' %}"><i class="glyphicon glyphicon-dashboard"></i> 仪表盘</a></li> -->
+    <li><a href="{% url 'asset_list' %}"><i class="glyphicon glyphicon-th-list"></i> Host List</a></li>
+    <li><a href="{% url 'openstack_deploy' %}"><i class="glyphicon glyphicon-th-large"></i> OpenStack Deploy</a></li>
+<!--    <li><a href="{% url 'repair_data' %}"><i class="glyphicon glyphicon-repeat"></i> 数据修复</a></li> -->
+    <li class="active"><a href="{% url 'keys_show' %}"><i class="glyphicon glyphicon-tags"></i> Minion Keys<span class="sr-only">(current)</span></a></li>
+    <li><a href="{% url 'record_list' %}"><i class="glyphicon glyphicon-floppy-disk"></i> Operation Record</a></li>
 {% endblock %}
 {% block content %}
     <div class="row">
@@ -15,14 +15,14 @@
                 <div class="panel-body">
                     <div class="col-sm-3">
                         <select class="form-control" id="select_col">
-                            <option value="acp">已接受</option>
-                            <option value="pre">待接受</option>
-                            <option value="rej">已拒绝</option>
+                            <option value="acp">Accepted</option>
+                            <option value="pre">Accepting</option>
+                            <option value="rej">Rejected</option>
                         </select>
                     </div>
                     <div class="col-sm-3">
                         <select class="form-control" id="select_dc">
-                            <option value="DC_ALL">机房</option>
+                            <option value="DC_ALL">Zone</option>
                             {% for en,cn in dc_dict.iteritems %}
                                 <option value="{{ en }}">{{ cn }}</option>
                             {% endfor %}
@@ -30,20 +30,20 @@
                     </div>
                     <div class="col-sm-3">
                         <select class="form-control" id="select_eg">
-                            <option value="EG_ALL">维护人员</option>
+                            <option value="EG_ALL">Operator</option>
                             {% for user, engi in engi_dict.iteritems %}
                                 <option value="{{ user }}">{{ engi }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-sm-1">
-                        <a class="btn btn-sm btn-info" id="check_accept" onclick="getCheckValue('accept')"> 接受 </a>
+                        <a class="btn btn-sm btn-info" id="check_accept" onclick="getCheckValue('accept')"> Accept </a>
                     </div>
                     <div class="col-sm-1">
-                        <a class="btn btn-sm btn-warning" id="check_reject" onclick="getCheckValue('reject')"> 拒绝 </a>
+                        <a class="btn btn-sm btn-warning" id="check_reject" onclick="getCheckValue('reject')"> Reject </a>
                     </div>
                     <div class="col-sm-1">
-                        <a class="btn btn-sm btn-danger" id="check_delete" onclick="getCheckValue('delete')"> 删除 </a>
+                        <a class="btn btn-sm btn-danger" id="check_delete" onclick="getCheckValue('delete')"> Delete </a>
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                     <tr class="success">
                         <th class="text-center">
                             <label class="checkbox-inline">
-                                <input id="checkall" type="checkbox" value="checkall" onclick="checkAll(checkall)">全选
+                                <input id="checkall" type="checkbox" value="checkall" onclick="checkAll(checkall)">Select All
                             </label>
                         </th>
                         <th class="text-center">Minion ID</th>

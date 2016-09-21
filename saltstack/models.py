@@ -68,7 +68,7 @@ class Jids(models.Model):
     load = models.TextField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'jids'
 
     def __unicode__(self):
@@ -87,7 +87,7 @@ class SaltReturns(models.Model):
     alter_time = models.DateTimeField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'salt_returns'
 
     def __unicode__(self):

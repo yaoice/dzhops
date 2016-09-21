@@ -1,4 +1,6 @@
 # -*- utf-8 -*-
+import os
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -24,7 +26,7 @@ LOGGING = {
         'log_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'log', 'dzhops.log'),
+            'filename': os.path.join('/tmp', 'log', 'dzhops.log'),
             'formatter': 'standard',
         },
     },

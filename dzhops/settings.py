@@ -72,7 +72,7 @@ DATABASES = {
         'NAME': 'dzhops',
         'USER': 'dzhops',
         'PORT': 3306,
-        'HOST': '172.16.214.102',
+        'HOST': '172.16.214.110',
         'PASSWORD': 'dzhinternet',
     }
 }
@@ -104,21 +104,21 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
 
-# RETURNS_MYSQL = {
-#     'default':
-#     {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'salt',
-#         'USER': 'salt',
-#         'PORT': 3306,
-#         'HOST': '192.168.220.201',
-#         'PASSWORD': 'dzhinternet'
-#     }
-# }
+#RETURNS_MYSQL = {
+#    'default':
+#    {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'dzhops',
+#        'USER': 'dzhops',
+#        'PORT': 3306,
+#        'HOST': '172.16.214.110',
+#        'PASSWORD': 'dzhinternet',
+#    }
+#}
 
 # salt-api setting
 SALT_API = {
-    'url': 'http://172.16.214.102:8888/',
+    'url': 'http://172.16.214.110:8888/',
     'user': 'saltapi',
     'password': '99cloud'
 }

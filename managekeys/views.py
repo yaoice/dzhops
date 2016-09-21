@@ -48,7 +48,7 @@ def manageMinionKeys(request):
 
     for id in minions:
         id_list = id.split('_')
-        ip = '.'.join(id_list[4:])
+        ip = '.'.join(id_list[1:])
         ip_list.append(ip)
         serv_dict[ip] = id
     ip_list.sort()

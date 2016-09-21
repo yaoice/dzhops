@@ -1,15 +1,15 @@
 {% extends "base.html" %}
-{% block title %}移动终端自动化运维平台{% endblock %}
+{% block title %}OpsMaster Automated operations platform{% endblock %}
 {% block nav %}
-    <li class="active"><a href="{% url 'index' %}"><i class="glyphicon glyphicon-dashboard"></i> 仪表盘<span class="sr-only">(current)</span></a></li>
-    <li><a href="{% url 'asset_list' %}"><i class="glyphicon glyphicon-th-list"></i> 主机列表</a></li>
-    <li><a href="{% url 'deploy' %}"><i class="glyphicon glyphicon-th-large"></i> SaltStack</a></li>
-    <li><a href="{% url 'repair_data' %}"><i class="glyphicon glyphicon-repeat"></i> 数据修复</a></li>
-    <li><a href="{% url 'keys_show' %}"><i class="glyphicon glyphicon-tags"></i> MinionKeys</a></li>
-    <li><a href="{% url 'record_list' %}"><i class="glyphicon glyphicon-floppy-disk"></i> 操作记录</a></li>
+<!--    <li class="active"><a href="{% url 'index' %}"><i class="glyphicon glyphicon-dashboard"></i> 仪表盘<span class="sr-only">(current)</span></a></li> -->
+    <li><a href="{% url 'asset_list' %}"><i class="glyphicon glyphicon-th-list"></i> Host List</a></li>
+    <li><a href="{% url 'openstack_deploy' %}"><i class="glyphicon glyphicon-th-large"></i> OpenStack Deploy</a></li>
+<!--    <li><a href="{% url 'repair_data' %}"><i class="glyphicon glyphicon-repeat"></i> 数据修复</a></li> -->
+    <li><a href="{% url 'keys_show' %}"><i class="glyphicon glyphicon-tags"></i> Minion Keys</a></li>
+    <li><a href="{% url 'record_list' %}"><i class="glyphicon glyphicon-floppy-disk"></i> Operation Record</a></li>
 {% endblock %}
 {% block content %}
-    <h5 class="page-header">
+<!--    <h5 class="page-header">
         <ol class="breadcrumb">
             <li class="active">仪表盘</li>
         </ol>
@@ -38,7 +38,7 @@
         <li class="list-group-item">总量 : <strong>{{ret.num_miniall}}</strong> 台</li>
         <li class="list-group-item">在线 : <strong>{{ret.num_miniup}}</strong> 台</li>
         <li class="list-group-item">离线 : <strong>{{ret.num_minidown}}</strong> 台</li>
-        <!--li class="list-group-item">备用</li-->
+        <li class="list-group-item">备用</li>
       </ul>
     </div>
     <div class="col-sm-2 placeholder">
@@ -47,13 +47,13 @@
         <a href="{% url 'keys_show' %}" class="list-group-item">已接受 : <strong>{{ret.num_mini}}</strong> 台</a>
         <a href="{% url 'keys_show' %}" class="list-group-item">待接受 : <strong>{{ret.num_minipre}}</strong> 台</a>
         <a href="{% url 'keys_show' %}" class="list-group-item">已拒绝 : <strong>{{ret.num_minirej}}</strong> 台</a>
-        <!--li class="list-group-item">备用</li-->
+        <li class="list-group-item">备用</li> 
       </ul>
-    </div>
+    </div> -->
     <div class="col-sm-8 placeholder">
       <div class="panel panel-primary">
         <div class="panel-heading">
-          <h3 class="panel-title">操作记录</h3>
+          <h3 class="panel-title">Operation Record</h3>
         </div>
         <div class="panel-body">
           <pre>{{ stret }}</pre>

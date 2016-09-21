@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import urllib2, urllib, json
+import json
+import urllib
+import urllib2
 
 
 class SaltAPI(object):
@@ -11,7 +13,10 @@ class SaltAPI(object):
         self.__token_id = self.saltLogin()
 
     def saltLogin(self):
-        params = {'eauth': 'pam', 'username': self.__user, 'password': self.__password}
+        params = {'eauth': 'pam',
+                  'username': self.__user,
+                  'password': self.__password
+                  }
         encode = urllib.urlencode(params)
         obj = urllib.unquote(encode)
         headers = {'X-Auth-Token': ''}
@@ -42,9 +47,18 @@ class SaltAPI(object):
         :return: jid字符串
         '''
         if tgt == '*':
-            params = {'client': 'local_async', 'tgt': tgt, 'fun': fun, 'arg': arg}
+            params = {'client': 'local_async',
+                      'tgt': tgt,
+                      'fun': fun,
+                      'arg': arg
+                      }
         else:
-            params = {'client': 'local_async', 'tgt': tgt, 'fun': fun, 'arg': arg, 'expr_form': 'list'}
+            params = {'client': 'local_async',
+                      'tgt': tgt,
+                      'fun': fun,
+                      'arg': arg,
+                      'expr_form': 'list'
+                      }
         obj = urllib.urlencode(params)
         content = self.postRequest(obj)
         jid = content['return'][0]['jid']
@@ -58,7 +72,12 @@ class SaltAPI(object):
         if tgt == '*':
             params = {'client': 'local', 'tgt': tgt, 'fun': fun, 'arg': arg}
         else:
-            params = {'client': 'local', 'tgt': tgt, 'fun': fun, 'arg': arg, 'expr_form': 'list'}
+            params = {'client': 'local',
+                      'tgt': tgt,
+                      'fun': fun,
+                      'arg': arg,
+                      'expr_form': 'list'
+                      }
         obj = urllib.urlencode(params)
         content = self.postRequest(obj)
         result = content['return'][0]
@@ -68,14 +87,20 @@ class SaltAPI(object):
         '''
         返回所有Minion keys；
         分别为 已接受、待接受、已拒绝；
-        :return: [u'local', u'minions_rejected', u'minions_denied', u'minions_pre', u'minions']
+        : return: [ u'local',
+                    u'minions_rejected',
+                    u'minions_denied',
+                    u'minions_pre',
+                    u'minions'
+                    ]
         '''
         params = {'client': 'wheel', 'fun': 'key.list_all'}
         obj = urllib.urlencode(params)
         content = self.postRequest(obj)
         minions = content['return'][0]['data']['return']['minions']
         minions_pre = content['return'][0]['data']['return']['minions_pre']
-        minions_rej = content['return'][0]['data']['return']['minions_rejected']
+        minions_rej = \
+            content['return'][0]['data']['return']['minions_rejected']
         return minions, minions_pre, minions_rej
 
     def actionKyes(self, keystrings, action):
@@ -84,7 +109,22 @@ class SaltAPI(object):
         :param keystrings: 将要处理的minion id字符串；
         :param action: 将要进行的处理，如接受、拒绝、删除；
         :return:
-        {"return": [{"tag": "salt/wheel/20160322171740805129", "data": {"jid": "20160322171740805129", "return": {}, "success": true, "_stamp": "2016-03-22T09:17:40.899757", "tag": "salt/wheel/20160322171740805129", "user": "zhaogb", "fun": "wheel.key.delete"}}]}
+        {
+            "return": [
+                        {
+                        "tag": "salt/wheel/20160322171740805129",
+                        "data": {
+                            "jid": "20160322171740805129",
+                            "return": {},
+                            "success": true,
+                            "_stamp": "2016-03-22T09:17:40.899757",
+                            "tag": "salt/wheel/20160322171740805129",
+                            "user": "zhaogb",
+                            "fun": "wheel.key.delete"
+                            }
+                        }
+                    ]
+                }
         '''
         func = 'key.' + action
         params = {'client': 'wheel', 'fun': func, 'match': keystrings}

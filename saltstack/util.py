@@ -6,7 +6,7 @@ from saltstack.models import ModulesLock
 from saltstack.saltapi import SaltAPI
 from dzhops import settings
 
-import logging, time, json, re
+import logging, time, json, re, subprocess
 
 log = logging.getLogger('dzhops')
 
@@ -377,6 +377,7 @@ def outFormat(result):
 
     return unret, hostfa, hosttr
 
+
 def manageResult(send_ids_set, recv_ips_list):
     '''
     计算目标客户端数量，回收结果数量，未返回结果的数量，未返回结果的IP列表；
@@ -415,3 +416,42 @@ def manageResult(send_ids_set, recv_ips_list):
         info_values = [send_ids_count, recv_ips_count, unrecv_count, unrecv_strings]
         send_recv_info = dict(zip(info_keys, info_values))
     return send_recv_info
+
+
+def findThisProcess(process_name):
+    '''
+    通过ps -eaf来检查进程是否存在
+    '''
+    ps = subprocess.Popen("ps -eaf | grep "+process_name,
+                          shell=True,
+                          stdout=subprocess.PIPE
+                          )
+    output = ps.stdout.read()
+    ps.stdout.close()
+    ps.wait()
+    return output
+
+
+def isThisRunning(process_dir, process_name):
+    '''
+    正则匹配进程
+    '''
+    output = findThisProcess(process_name)
+    if re.search(process_dir + process_name, output) is None:
+        return False
+    else:
+        return True
+
+"""
+    捕获命令的输出
+    def runProcess(exe):
+        p = subprocess.Popen(exe, stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
+        while(True):
+            # returns None while subprocess is running
+            retcode = p.poll()
+            line = p.stdout.readline()
+            yield line
+            if(retcode is not None):
+                break
+"""

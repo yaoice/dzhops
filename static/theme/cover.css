@@ -161,3 +161,8 @@ body {
     width: 700px;
   }
 }
+
+.login-box-logo {
+    text-align: center;
+    padding-bottom: 50px;
+}

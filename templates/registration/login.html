@@ -6,9 +6,9 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="description" content="Dzh OPS login">
     <meta name="author" content="Guibin">
-    <link rel="icon" href="/static/img/favicon.ico">
+    <link rel="icon" href="/static/img/favicon_99.ico">
 
-    <title>登陆-移动终端自动化运维平台</title>
+    <title>Login-OpsMaster自动化运维平台</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
@@ -36,29 +36,32 @@
         <div class="cover-container">
 			<div class="masthead clearfix">
 				<div class="inner">
-				  <h3 class="masthead-brand">移动终端自动化运维平台</h3>
+<!--				  <h3 class="masthead-brand">移动终端自动化运维平台</h3> -->
 				</div>
 			</div>
             {% if form.errors %}
-                <div class="alert alert-danger text-center">用户名或密码错误！</div>
+                <div class="alert alert-danger text-center">username or password error！</div>
             {% endif %}
+            <div class='login-box-logo'>
+            <img src='/static/img/logo_transparent_200x75.png'>
+            </div>
 			<div class="inner cover">
 				<div class="col-sm-offset-3 col-sm-6">
 					<form class="form-signin" action="" method="post">
 						{% csrf_token %}
 						<label for="username" class="sr-only">账号</label>
-						<input type="text" id="username" name="username" class="form-control" placeholder="账号" required="" autofocus="">
+						<input type="text" id="username" name="username" class="form-control" placeholder="username" required="" autofocus="">
 						<label for="password" class="sr-only">密码</label>
-						<input type="password" id="password" name="password" class="form-control" placeholder="密码" required="">
+						<input type="password" id="password" name="password" class="form-control" placeholder="password" required="">
 						<br />
-						<button class="btn btn-primary btn-block" type="submit">登录</button>
+						<button class="btn btn-primary btn-block" type="submit">login</button>
 					</form>
 				</div>
 			</div>
 
           <div class="mastfoot">
             <div class="inner">
-              <p><a href="#" target="_blank">移动终端</a> &copy; 2015. All rights reserved. </p>
+              <p><a href="#" target="_blank">99cloud Inc</a> &copy; 2016. All rights reserved. </p>
             </div>
           </div>
 
