@@ -120,7 +120,7 @@ def openstackEnvCreate(request):
                     'controllers': controller_minions,
                     'computes': compute_minions,
                     'zabbix_servers': zabbix_server_minions,
-                    'zabbix_agents': zabbix_server_minions,
+                    'zabbix_agents': zabbix_agent_minions,
                     'elk_servers': elk_server_minions,
                     'elk_agents': elk_agent_minions,
                     'neutron_ovs_minions': neutron_ovs_minions,
