@@ -15,7 +15,8 @@ from saltstack.sshutil import *
 from dzhops import settings
 from fabric.api import execute
 from fabric.network import disconnect_all
-# from jinja2 import Environment, FileSystemLoader
+
+from mako import exceptions
 from mako.lookup import TemplateLookup
 
 import logging, json, time, copy, os, subprocess
@@ -155,8 +156,11 @@ def openstackEnvCreate(request):
         tpl_list = os.listdir(template_dir)
         # 渲染tpl目录下的所有模板
         for t in tpl_list:
-            tpl = env.get_template(t)
-            output = tpl.render(**salt_config_dict)
+            try:
+                tpl = env.get_template(t)
+                output = tpl.render(**salt_config_dict)
+            except:
+                print exceptions.html_error_template().render()
             with open(output_dir + t, 'w') as out:
                 out.write(output)
 
