@@ -573,7 +573,6 @@ function isAddOk() {
 //      var master = $("input[name='master']").val();
         var username = $("input[name='username']").val();
         var password = $("input[name='password']").val();
-		var master = '172.16.214.110';
         var yum_url = $("input[name='yum_url']").val();
         var pip_url = $("input[name='pip_url']").val();
 		var compute_minions = "";
@@ -592,11 +591,6 @@ function isAddOk() {
 		     alert("没有任何要添加的minion节点！");
 		     return false;
 		  }
-		
-		if (master === '' || master === null) {
-	        	alert('请输入要添加的master节点');
-	        	return false;
-	        }
 	     if (username === '' || username === null) {
 	        	alert('请输入root用户名');
 	        	return false;
@@ -620,7 +614,6 @@ function isAddOk() {
 	    		 "/salt/add/",
 	    		 {
 	    			 'minions': compute_minions,
-	    			 'master': master,
 	    			 'username': username,
 	    			 'password': password,
 	    			 'yum_url': yum_url,

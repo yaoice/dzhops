@@ -11,8 +11,6 @@ from saltstack.models import DangerCommand, DeployModules, ConfigUpdate, CommonO
 from saltstack.saltapi import SaltAPI
 from saltstack.util import targetToMinionID, datacenterToMinionID, findJob, mysqlReturns, outFormat, manageResult, \
     moduleDetection, moduleLock, moduleUnlock, isThisRunning
-#from saltstack.sshutil import auth, disable_selinux, disable_services, backup_repo_and_pip, config_repo_and_pip, \
-#    create_yum_and_pip, config_salt_minion
 from saltstack.sshutil import *
 from dzhops import settings
 from fabric.api import execute
@@ -254,7 +252,7 @@ def addMinion(request):
     '''
     if request.method == 'POST':
         minions_list = request.POST.get('minions', '')
-        master = request.POST.get('master', '')
+        master = netutils.get_my_ipv4()
         root_username = request.POST.get('username', '')
         root_password = request.POST.get('password', '')
         yum_url = request.POST.get('yum_url', '')

@@ -3,7 +3,6 @@
 
 import re
 import yaml
-from fabric.api import run
 from fabric.api import hosts
 from fabric.api import task
 from fabric.api import env
@@ -20,15 +19,17 @@ from dzhops import settings as mysql_settings
 
 disable_srvs = ['firewalld']
 
+
 def auth(**env_args):
     def get(key, default=None):
-       return env_args.get('env_' + key, default)
+        return env_args.get('env_' + key, default)
 
     env.hosts = get('hosts', 'localhost')
     env.user = get('user', 'root')
     env.password = get('password')
     env.key_filename = get('key_filename')
     env.roledefs = get('roledefs')
+
 
 def read_conf(conf_path):
     conf_dict = {}
@@ -40,6 +41,7 @@ def read_conf(conf_path):
                 if single_dict:
                     conf_dict.update(single_dict)
     return conf_dict
+
 
 @task
 def disable_selinux():

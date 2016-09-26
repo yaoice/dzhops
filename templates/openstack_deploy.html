@@ -4,6 +4,7 @@
 <!--    <li><a href="{% url 'index' %}"><i class="glyphicon glyphicon-dashboard"></i> 仪表盘</a></li> -->
     <li><a href="{% url 'asset_list' %}"><i class="glyphicon glyphicon-th-list"></i> 主机列表</a></li>
     <li class="active"><a href="{% url 'deploy' %}"><i class="glyphicon glyphicon-th-large"></i> 安装部署<span class="sr-only">(current)</span></a></li>
+    <li><a href="{% url 'node_topology' %}"><i class="glyphicon glyphicon-book"></i> 云平台节点</a></li>
 <!--    <li><a href="{% url 'repair_data' %}"><i class="glyphicon glyphicon-repeat"></i> 数据修复</a></li> -->
     <li><a href="{% url 'keys_show' %}"><i class="glyphicon glyphicon-tags"></i> MinionKeys</a></li>
     <li><a href="{% url 'record_list' %}"><i class="glyphicon glyphicon-floppy-disk"></i> 操作记录</a></li>
@@ -19,65 +20,6 @@
             <li><a href="{% url 'execute' %}">远程操作</a></li>
         </ol>
     </h5>
-  <!--   <div class="row">
-        <form class="form-horizontal form-border" method="post" enctype="multipart/form-data">
-        	{% csrf_token %}
-            <div class="col-sm-10 col-sm-offset-1">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">controller节点</label>
-                            <div class="col-sm-10">
-            					<select name='controller_minion_id' class="form-control input-xlarge">
-            					{% if minions_list %}
-                    				{% for minion in minions_list %}
-            							<option value="{{ minion }}">{{ minion }}</option>
-            						{% endfor %}
-            					{% else %}
-            						<option>-----未添加任何minions节点------</option>
-                            	{% endif %}
-            					</select>
-            				</div>
-                        </div>
-                        
-                        <div class="form-group">
-                        	<label class="col-sm-2 control-label">compute节点</label>
-                        	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='compute_minion_id' type="checkbox" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-                        	</div>
-        				</div>
-                        
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                 <div class="col-sm-offset-9 btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary" onclick="installOpenStack()" id="deployos">开始安装</button>
-                    <button type="button" class="btn btn-primary" onclick="checkInsPro()" id="chkpro">查看安装log</button>
-                 </div>
-            </div>
-            
-             <div class="col-sm-10 col-sm-offset-1">
-                <div class='bg-primary'>
-                    <h4 id="info"></h4>
-                </div>
-                <div>
-                    <p id="result"></p>
-                </div>
-            </div>
-        </form>
-    </div> -->
-   <!--row end-->
-   
-  
  <div class="container-fluid" style="width:90%;">
 		<div data-wizard-init>
 		  <ul class="steps">

@@ -11,4 +11,5 @@ urlpatterns = patterns(
     url(r'^show/$', 'manageMinionKeys', name='keys_show'),
     url(r'^api/$', 'manageMinionKeysAPI', name='keys_api'),
     url(r'^(?P<action>accept|delete|reject)/$', 'actionMinionKeys', name='action_keys'),
+    url(r'^nodes/$', 'getNodeTopology', name='node_topology'),
 )

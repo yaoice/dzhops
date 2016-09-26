@@ -11,7 +11,8 @@ from managekeys.utils import clearUpMinionKyes
 
 from dzhops import settings
 
-import logging, json
+import logging
+import json
 # Create your views here.
 
 log = logging.getLogger('dzhops')
@@ -66,6 +67,49 @@ def manageMinionKeys(request):
             'dc_dict': dc_dict,
             'engi_dict': engi_dict,
             'serv_list': serv_list
+        }
+    )
+
+
+@login_required
+def getNodeTopology(request):
+    '''
+    进入页面，首次展示已经接受的所有Minion ID，从这里获取并返回；
+    :param request:
+    :return:
+    '''
+    serv_dict = {}
+    role_list = []
+
+    sapi = SaltAPI(
+        url=settings.SALT_API['url'],
+        username=settings.SALT_API['user'],
+        password=settings.SALT_API['password']
+    )
+    minions, minions_pre, minions_rej = sapi.allMinionKeys()
+
+    role_dict = sapi.masterToMinionContent(tgt='*',
+                                           fun='grains.get',
+                                           arg='role')
+
+    for id in minions:
+        id_list = id.split('_')
+        ip = '.'.join(id_list[1:])
+        roles = role_dict.get(id)
+        if roles:
+            roles_list = roles if isinstance(roles, list) else roles.split(',')
+            role_list += roles_list
+            serv_dict[id] = {'ip': ip,
+                             'role': ', '.join(roles_list)}
+
+    return render(
+        request,
+        'node_topology.html',
+        {
+#            'serv_dict': sorted(serv_dict.items(), lambda x, y: cmp(x[0], y[0]))
+            'serv_list': sorted(serv_dict.items(), key=lambda d: d[0]),
+            'serv_dict': json.dumps(serv_dict),
+            'role_list': json.dumps(list(set(role_list))),
         }
     )
 
