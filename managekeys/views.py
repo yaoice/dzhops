@@ -193,6 +193,7 @@ def actionMinionKeys(request, action):
 
     return HttpResponse(result_json, content_type='application/json')
 
+
 @login_required
 def minionKeysAccept(request):
     '''
@@ -235,6 +236,7 @@ def minionKeysAccept(request):
         }
     )
 
+
 @login_required
 def minionKeysUnaccept(request):
     '''
@@ -273,6 +275,7 @@ def minionKeysUnaccept(request):
             'all_minions_pre': dc_hosts
         }
     )
+
 
 @login_required
 def minionKeysReject(request):
@@ -314,6 +317,7 @@ def minionKeysReject(request):
         }
     )
 
+
 @login_required
 def deleteMinionKeys(request):
     '''
@@ -333,6 +337,7 @@ def deleteMinionKeys(request):
 
     return HttpResponseRedirect(reverse('keys_show'))
 
+
 @login_required
 def acceptMinionKeys(request):
     '''
@@ -349,6 +354,7 @@ def acceptMinionKeys(request):
     ret = sapi.acceptKeys(minion_id_strings)
 
     return HttpResponseRedirect(reverse('keys_unaccept'))
+
 
 @login_required
 def deleteRejectKeys(request):

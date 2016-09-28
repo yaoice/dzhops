@@ -2,11 +2,13 @@
 
 
 import re
+import os
 import yaml
 from fabric.api import hosts
 from fabric.api import task
 from fabric.api import env
 from fabric.api import sudo
+from fabric.api import put
 from fabric.api import parallel
 from fabric.api import roles
 from fabric.api import execute
@@ -15,7 +17,7 @@ from fabric.colors import red, green
 from fabric.network import disconnect_all
 
 from oslo_utils import netutils
-from dzhops import settings as mysql_settings
+from dzhops import settings as dj_settings
 
 disable_srvs = ['firewalld']
 
@@ -152,7 +154,7 @@ EOF
 def config_salt_minion():
     sudo('yum install -y salt-minion python2-oslo-utils')
     sudo('rm -f /etc/salt/minion_id')
-    
+
     salt_minion_conf = '''
 master: {0}
 mysql.host: {1}
@@ -161,17 +163,23 @@ mysql.pass: {3}
 mysql.db: {4}
 mysql.port: {5}
 EOF
-    '''.format(master, 
-               mysql_settings.DATABASES['default']['HOST'],
-               mysql_settings.DATABASES['default']['USER'],
-               mysql_settings.DATABASES['default']['PASSWORD'],
-               mysql_settings.DATABASES['default']['NAME'],
-               mysql_settings.DATABASES['default']['PORT'],
+    '''.format(master,
+               dj_settings.DATABASES['default']['HOST'],
+               dj_settings.DATABASES['default']['USER'],
+               dj_settings.DATABASES['default']['PASSWORD'],
+               dj_settings.DATABASES['default']['NAME'],
+               dj_settings.DATABASES['default']['PORT'],
                )
+    ceph_osd_module_path = os.path.join(dj_settings.BASE_DIR,
+                                        'saltstack/extmodules/ceph_osd.py')
+
+    put(ceph_osd_module_path,
+        "/usr/lib/python2.7/site-packages/salt/modules/ceph_osd.py",
+        mode=0644, use_sudo=True)
+
     sudo('cat > /etc/salt/minion << EOF {}'.format(salt_minion_conf))
     minion_id = sudo("python -c 'from oslo_utils import netutils; print netutils.get_my_ipv4()'")
-    sudo('hostnamectl set-hostname {}'.format('node_' + minion_id.replace('.','_')))
-#    sudo("echo id: {} >> /etc/salt/minion".format('node_' + minion_id.replace('.','_')))
+    sudo('hostnamectl set-hostname {}'.format('node_' + minion_id.replace('.', '_')))
     sudo('systemctl restart salt-minion')
     sudo('systemctl enable salt-minion')
 

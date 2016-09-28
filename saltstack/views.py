@@ -49,6 +49,56 @@ def openstackDeployProgram(request):
     )
 
 
+def get_role_minions(minions=None, role_dict=None):
+    temp_minions = []
+    for minion in minions:
+        if not role_dict.get(minion, 'None'):
+            temp_minions.append(minion)
+    return temp_minions
+
+
+@login_required
+def openstackAddProgram(request):
+    sapi = SaltAPI(
+        url=settings.SALT_API['url'],
+        username=settings.SALT_API['user'],
+        password=settings.SALT_API['password']
+    )
+    minions_list = sapi.allMinionKeys()[0]
+
+    role_dict = sapi.masterToMinionContent(tgt='*',
+                                           fun='grains.get',
+                                           arg='role')
+
+    compute_minions_list = get_role_minions(minions_list,
+                                            role_dict)
+
+    ceph_osd_minions_list = get_role_minions(minions_list,
+                                             role_dict)
+
+    zabbix_agent_minions_list = get_role_minions(minions_list,
+                                                 role_dict)
+
+    elk_agent_minions_list = get_role_minions(minions_list,
+                                              role_dict)
+
+    # 获取ceph osd dev盘符
+    osd_devices = sapi.masterToMinionContent(tgt='*',
+                                             fun='ceph_osd.get_osd_dev',
+                                             arg=None)
+    return render(
+        request,
+        'openstack_add.html',
+        {
+         'compute_minions_list': compute_minions_list,
+         'ceph_osd_minions_list': ceph_osd_minions_list,
+         'zabbix_agent_minions_list': zabbix_agent_minions_list,
+         'elk_agent_minions_list': elk_agent_minions_list,
+         'osd_devices': osd_devices
+        }
+    )
+
+
 @csrf_exempt
 @login_required
 def openstackEnvCreate(request):

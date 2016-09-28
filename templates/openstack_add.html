@@ -13,8 +13,8 @@
     <h5 class="page-header">
         <ol class="breadcrumb">
         	<li><a href="{% url 'index_minion' %}">添加minion节点</a></li>
-        	<li class="active">OpenStack部署</li>
-            <li><a href="{% url 'openstack_add' %}">OpenStack扩容</a></li>
+        	<li><a href="{% url 'openstack_deploy' %}">OpenStack部署</a></li>
+            <li class="active">OpenStack扩容</li>
             <li><a href="{% url 'deploy' %}">模块部署</a></li>
             <li><a href="{% url 'update' %}">配置更新</a></li>
             <li><a href="{% url 'routine' %}">日常维护</a></li>
@@ -24,7 +24,7 @@
  <div class="container-fluid" style="width:90%;">
 		<div data-wizard-init>
 		  <ul class="steps">
-			<li data-step="1">控制/计算</li>
+			<li data-step="1">计算</li>
 			<li data-step="2">存储</li>
 			<li data-step="3">网络</li>
 			<li data-step="4">增值插件</li>
@@ -33,48 +33,11 @@
 		  <div class="steps-content">
 		  
 			<div data-step="1">
-			  <div class="form-group">
-			  	<label class="col-sm-2 control-label">启用控制节点HA</label>
-			  	<input name='enable_ha' type="checkbox" class="ha_check" data-toggle="collapse" data-target="#k_vip_collapse">
-			  </div>
-			  
-			  <form id="haForm" class="form-horizontal">
-			  <div id="k_vip_collapse" class="collapse">
-			  	<div class="form-group">
-					<label class="col-sm-2 control-label">虚拟VIP</label>
-					<input name='keepalived_vip' type="text">
-			  	</div>
-			  	
-			  	<div class="form-group">
-			  		<label class="col-sm-2 control-label">VRID</label>
-					<input name='keepalived_vrid' type="number" min="1" step="1" max="255" class="form-inline" placeholder='51' style="width:7%;">
-			  	</div>
-			  	
-			  	<div class="form-group">
-			  		<label class="col-sm-2 control-label">VIP网卡</label>
-					<input name='keepalived_vip_interface' type="text" class="form-inline" placeholder='eth0' style="width:7%;">
-			  	</div>
-			  </div>
-			  
-			  	<div class="form-group">
-                 	<label class="col-sm-2 control-label">controller节点</label>
-                  	<div class="col-sm-10">
-                            	{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='controller_minions' type="checkbox" class="sev_check" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-            		</div>
-       			</div>
-                
                 <div class="form-group">
                         	<label class="col-sm-2 control-label">compute节点</label>
                         	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
+                        		{% if compute_minions_list %}
+                        			{% for minion in compute_minions_list %}
                         				<label class="col-sm-10 checkbox">
                         					<input name='compute_minions' type="checkbox" value="{{ minion }}">
                         					{{ minion }}
@@ -83,7 +46,6 @@
                         		{% endif %}
                         	</div>
         		 </div>
-        		 </form>
         	</div>
         	
 			
@@ -103,26 +65,12 @@
 			  				<input type="radio" class="storage_glusterfs_check" name="storage" value="glusterfs" disabled>&nbsp;&nbsp;glusterfs
 			  			</div>
 			  		</div>
-        		
-        			<div id="storage_ceph_mon" class="form-group" style="display: ''">
-                        	<div><label class="col-sm-2 control-label">ceph mon节点</label></div>
-                        	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='ceph_mon_minions' type="checkbox" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-                        	</div>
-                     </div>
                      
                      <div id="storage_ceph_osd" class="form-group" style="display: ''">
                         	<label class="col-sm-2 control-label">ceph osd节点</label>
                         	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
+                        		{% if ceph_osd_minions_list %}
+                        			{% for minion in ceph_osd_minions_list %}
                         				<label class="col-sm-10 checkbox">
                         					<input name="ceph_osd_minions" type="checkbox" value="{{ minion }}" data-toggle="collapse" data-target="#{{minion}}">
                         					{{ minion }}
@@ -236,25 +184,13 @@
 			  </div>
 			  
 			  <div id="enable_monitor" class="collapse">
-        			<div id="monitor_zabbix_server" class="form-group" style="display: ''">
-                        	<div><label class="col-sm-2 control-label">zabbix server节点</label></div>
-                        	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='zabbix_server_minions' type="checkbox" class="zabbix_server" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-                        	</div>
-                     </div>
+        			
 			  	
         			<div id="monitor_zabbix_agent" class="form-group" style="display: ''">
                         	<div><label class="col-sm-2 control-label">zabbix agent节点</label></div>
                         	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
+                        		{% if zabbix_agent_minions_list %}
+                        			{% for minion in zabbix_agent_minions_list %}
                         				<label class="col-sm-10 checkbox">
                         					<input name='zabbix_agent_minions' type="checkbox" value="{{ minion }}">
                         					{{ minion }}
@@ -271,25 +207,12 @@
 			  </div>
 			  
 			  <div id="enable_elk" class="collapse">
-        			<div id="elk_server" class="form-group" style="display: ''">
-                        	<div><label class="col-sm-2 control-label">elk server节点</label></div>
-                        	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='elk_server_minions' type="checkbox" class="elk_server" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-                        	</div>
-                    </div>
 			  	
         			<div id="elk_agent" class="form-group" style="display: ''">
                         	<div><label class="col-sm-2 control-label">elk agent节点</label></div>
                         	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
+                        		{% if elk_agent_minions_list %}
+                        			{% for minion in elk_agent_minions_list %}
                         				<label class="col-sm-10 checkbox">
                         					<input name='elk_agent_minions' type="checkbox" value="{{ minion }}">
                         					{{ minion }}
@@ -307,9 +230,8 @@
     <br/>
     <div class="form-group">
                  <div class="col-sm-offset-9 btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary" onclick="installOpenStack()" id="deployos">开始安装</button>
-                    <button type="button" class="btn btn-primary" onclick="checkInsPro()" id="chkpro">查看安装log</button>
-                   <!--  <input type="submit" class="btn btn-primary" value="添加"> -->
+                    <button type="button" class="btn btn-primary" onclick="installOpenStack()" id="deployos">开始扩容</button>
+                    <button type="button" class="btn btn-primary" onclick="checkInsPro()" id="chkpro">查看扩容log</button>
                  </div>
             </div>
    
