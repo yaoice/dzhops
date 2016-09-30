@@ -127,7 +127,7 @@
                         					<input name="ceph_osd_minions" type="checkbox" value="{{ minion }}" data-toggle="collapse" data-target="#{{minion}}">
                         					{{ minion }}
                         				</label>
-                        				<label id="{{minion}}" class="collapse col-sm-10 checkbox inline">osd盘符设备:
+                        				<label id="{{minion}}" class="collapse col-sm-10 checkbox inline">
                         				{% for osd_minion, osd_dev in osd_devices.iteritems %}
                         					{% if minion == osd_minion %}
                         						{% for dev in osd_dev %}
@@ -162,7 +162,7 @@
 				<div class="form-group">
 			  			<label class="col-sm-2 control-label">网络模式</label>
 			  			<div class="col-sm-10">
-			  				<input type="radio" class="neutron_vlan" name="neutron_mode" value="vlan" checked>&nbsp;&nbsp;vlan
+			  				<input id="neutron_vlan_mode" type="radio" class="neutron_vlan" name="neutron_mode" value="vlan" checked>&nbsp;&nbsp;vlan
 			  			</div>
 			  			<div class="col-sm-10">
 			  				<input id="neutron_vxlan_mode" type="radio" class="neutron_vxlan" name="neutron_mode" value="vxlan">&nbsp;&nbsp;vxlan

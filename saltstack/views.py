@@ -101,9 +101,90 @@ def openstackAddProgram(request):
 
 @csrf_exempt
 @login_required
-def openstackEnvCreate(request):
-    template_dir = os.path.join(settings.BASE_DIR, 'saltstack/saltconfig')
+def openstackEnvAdd(request):
+    template_dir = os.path.join(settings.BASE_DIR, 'saltstack/saltconfig/add')
     output_dir = '/srv/openstack-deploy/salt/dev/inventory/'
+    network_dict = {}
+    ceph_osd_devs_dict = {}
+    neutron_ovs_minions = ''
+
+    if request.method == 'POST':
+        config_storage_install = request.POST.get('config_storage_install', '')
+        config_zabbix_install = request.POST.get('config_zabbix_install', '')
+        config_elk_install = request.POST.get('config_elk_install', '')
+        compute_minions = request.POST.get('compute_minions', '')
+        zabbix_agent_minions = request.POST.get('zabbix_agent_minions', '')
+        elk_agent_minions = request.POST.get('elk_agent_minions', '')
+        storage_osd_minions = request.POST.get('storage_osd_minions', '')
+        compute_minions = request.POST.get('compute_minions', '')
+        nova_storage_backends = request.POST.get('nova_storage_backends', '')
+        ceph_osd_devs_json = request.POST.get('ceph_osd_devs', '')
+        ceph_osd_devs = json.loads(ceph_osd_devs_json) if ceph_osd_devs_json \
+            else {}
+
+        for minion_id, dev in ceph_osd_devs.items():
+            ceph_osd_devs_dict[minion_id] = dev.split(',')
+
+        compute_minions_list = compute_minions.split(',')
+        if config_storage_install == 'true':
+            storage_osd_minions_list = storage_osd_minions.split(',')
+            all_minions = set(
+                              compute_minions_list +
+                              storage_osd_minions_list)
+        elif config_storage_install == 'false':
+            all_minions = set(compute_minions_list)
+
+        for id in all_minions:
+            id_list = id.split('_')
+            ip = '.'.join(id_list[1:])
+            network_dict[id] = ip
+
+        neutron_ovs_minions = ','.join(list(set(compute_minions_list)))
+
+        salt_config_dict = {
+                    'computes': compute_minions,
+                    'nova_storage_backends': nova_storage_backends,
+                    'zabbix_agents': zabbix_agent_minions,
+                    'elk_agents': elk_agent_minions,
+                    'neutron_ovs_minions': neutron_ovs_minions,
+                    'config_storage_install': config_storage_install,
+                    'config_zabbix_install': config_zabbix_install,
+                    'config_elk_install': config_elk_install,
+                    'storage_osd_minions': storage_osd_minions,
+                    'add_ceph_osd_devs_dict': ceph_osd_devs_dict,
+                    'add_minions_hosts': network_dict,
+                    }
+
+    env = TemplateLookup(directories=[template_dir],
+                         module_directory='/tmp/mako_modules2',
+                         output_encoding='utf-8',
+                         encoding_errors='replace')
+    tpl_list = os.listdir(template_dir)
+    for t in tpl_list:
+        try:
+            tpl = env.get_template(t)
+            output = tpl.render(**salt_config_dict)
+        except:
+            print exceptions.text_error_template().render()
+            ret_json = json.dumps({'ret_code': 1})
+            return HttpResponse(ret_json, content_type='application/json')
+        if 'hosts_add' in t:
+            with open(output_dir + 'hosts.sls', 'w') as out:
+                out.write(output)
+        elif 'network_add' in t:
+            with open(output_dir + 'network.sls', 'w') as out:
+                out.write(output)
+
+    ret_json = json.dumps({'ret_code': 0})
+    return HttpResponse(ret_json, content_type='application/json')
+
+
+@csrf_exempt
+@login_required
+def openstackEnvCreate(request):
+    template_dir = os.path.join(settings.BASE_DIR, 'saltstack/saltconfig/init')
+    output_dir = '/srv/openstack-deploy/salt/dev/inventory/'
+    extend_os_output_dir = os.path.join(settings.BASE_DIR, 'saltstack/saltconfig/add/')
     network_dict = {}
     ceph_osd_devs_dict = {}
     neutron_ovs_minions = ''
@@ -125,7 +206,6 @@ def openstackEnvCreate(request):
         elk_agent_minions = request.POST.get('elk_agent_minions', '')
         storage_mon_minions = request.POST.get('storage_mon_minions', '')
         storage_osd_minions = request.POST.get('storage_osd_minions', '')
-        compute_minions = request.POST.get('compute_minions', '')
         storage_backends = request.POST.get('storage_backends', '')
         ceph_osd_devs_json = request.POST.get('ceph_osd_devs', '')
         ceph_osd_devs = json.loads(ceph_osd_devs_json) if ceph_osd_devs_json \
@@ -198,6 +278,23 @@ def openstackEnvCreate(request):
                     'vxlan_end': vxlan_end
                     }
 
+    def replace(oldstr, newstr, infile, dryrun=False):
+        linelist = []
+        with open(infile) as f:
+            for item in f:
+                newitem = re.sub(oldstr, newstr, item)
+                linelist.append(newitem)
+        if dryrun is False:
+            with open(infile, "w") as f:
+                f.truncate()
+                for line in linelist:
+                    f.writelines(line)
+        elif dryrun is True:
+            for line in linelist:
+                print(line)
+        else:
+            exit("Unknown option specified to 'dryrun' argument, Usage: dryrun=<True|False>.")
+
     def genSaltConfigFile():
         env = TemplateLookup(directories=[template_dir],
                              module_directory='/tmp/mako_modules',
@@ -210,9 +307,17 @@ def openstackEnvCreate(request):
                 tpl = env.get_template(t)
                 output = tpl.render(**salt_config_dict)
             except:
-                print exceptions.html_error_template().render()
-            with open(output_dir + t, 'w') as out:
-                out.write(output)
+                print exceptions.text_error_template().render()
+                ret_json = json.dumps({'ret_code': 1})
+                return HttpResponse(ret_json, content_type='application/json')
+            if 'add' in t:
+                add_template_path = os.path.join(extend_os_output_dir, t)
+                with open(add_template_path, 'w') as out:
+                    out.write(output)
+                replace("\__", "", add_template_path)
+            else:
+                with open(output_dir + t, 'w') as out:
+                    out.write(output)
 
     try:
         genSaltConfigFile()
@@ -229,6 +334,28 @@ def openstackEnvCreate(request):
 def openstackDeployApi(request):
     cmd_dir = "/srv/openstack-deploy/salt/dev/scripts/"
     cmd_name = "all.sh"
+
+    if isThisRunning(cmd_dir, cmd_name):
+        ret_json = json.dumps({'ret_code': 2})
+        return HttpResponse(ret_json, content_type='application/json')
+
+    try:
+        subprocess.Popen(('bash ' + os.path.join(cmd_dir, cmd_name)).split(),
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+    except:
+        print "execute all.sh failed"
+        ret_json = json.dumps({'ret_code': 1})
+        return HttpResponse(ret_json, content_type='application/json')
+    ret_json = json.dumps({'ret_code': 0})
+    return HttpResponse(ret_json, content_type='application/json')
+
+
+@csrf_exempt
+@login_required
+def openstackAddApi(request):
+    cmd_dir = "/srv/openstack-deploy/salt/dev/scripts/"
+    cmd_name = "add.sh"
 
     if isThisRunning(cmd_dir, cmd_name):
         ret_json = json.dumps({'ret_code': 2})

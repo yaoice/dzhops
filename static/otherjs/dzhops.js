@@ -672,6 +672,177 @@ function isAddOk() {
 }
 
 
+function addOpsConfig() {
+	$(document).ready(function(){
+		var compute_minions = "";
+		var compute_minions_list = $('input[name="compute_minions"]:checked');
+		
+		var config_zabbix_install = 'false';
+		var config_elk_install = 'false';
+		var config_storage_install = "false";
+		var storage_osd_minions = "";
+		var zabbix_agent_minions = "";
+		var elk_agent_minions = "";
+		var zabbix_agent_minions_list = $('input[name="zabbix_agent_minions"]:checked');
+		var elk_agent_minions_list = $('input[name="elk_agent_minions"]:checked');
+		
+		var nova_storage_backends = $('input[name="nova_storage"]:checked').val();
+		
+		var enable_distri_storage = $('input[name="enable_distri_storage"]');
+		var ceph_osd_minions_list = $('input[name="ceph_osd_minions"]:checked');
+		var ceph_osd_devs = {};
+		
+		if ($(enable_distri_storage).is(":checked")) {
+			config_storage_install = 'true';
+		}
+		else {
+			config_storage_install = 'false';
+		}
+		
+		/*
+		 * 对是否启用监控、elk的条件判断
+		 */
+		if ($(enable_monitor).is(":checked")) {
+			config_zabbix_install = 'true';
+		}
+		else {
+			config_zabbix_install = 'false';
+		}
+		
+		if ($(enable_elk).is(":checked")) {
+			config_elk_install = 'true';
+		}
+		else {
+			config_elk_install = 'false';
+		}
+		
+		/*
+		 * 获取所选的所有计算节点salt agent
+		 */
+		 jQuery.each(compute_minions_list, function(i, v){
+			 
+			 if (i != compute_minions_list.length-1) {
+				 compute_minions += $(v).val() + ','; 
+			 }
+			 else {
+				 compute_minions += $(v).val();
+			 }
+		 });
+		 
+		 if (compute_minions === "" || compute_minions === null) {
+		     alert("未选择任何compute节点！");
+		     return false;
+		  }
+		 
+		 jQuery.each(zabbix_agent_minions_list, function(i, v){
+			 if (i != zabbix_agent_minions_list.length-1) {
+				 zabbix_agent_minions += $(v).val() + ','; 
+			 }
+			 else {
+				 zabbix_agent_minions += $(v).val();
+			 }
+		 });
+		 
+		 jQuery.each(elk_agent_minions_list, function(i, v){
+			 if (i != elk_agent_minions_list.length-1) {
+				 elk_agent_minions += $(v).val() + ','; 
+			 }
+			 else {
+				 elk_agent_minions += $(v).val();
+			 }
+		 });
+		 
+		 var osd_err = 0;
+		 jQuery.each(ceph_osd_minions_list, function(i, v){
+				
+				var ceph_osd_minion = $(v).val();
+				var osd_devs = "";
+				
+				var ceph_osd_devs_list = $('input[name=' + ceph_osd_minion + '_osds]:checked');
+				if (ceph_osd_devs_list.length == 0) {
+					alert("未对osd节点" + ceph_osd_minion + "分配任何osd磁盘设备");
+					osd_err = 1;
+					return false;
+				}
+				
+				jQuery.each(ceph_osd_devs_list, function(i, v){
+					 if (i != ceph_osd_devs_list.length-1) {
+						 osd_devs += $(v).val() + ','; 
+					 }
+					 else {
+						 osd_devs += $(v).val();
+					 }
+				 });
+				
+				ceph_osd_devs[ceph_osd_minion + ""] = osd_devs;
+				
+				 if (i != ceph_osd_minions_list.length-1) {
+					 storage_osd_minions += $(v).val() + ','; 
+				 }
+				 else {
+					 storage_osd_minions += $(v).val();
+				 }
+			 });
+		 
+		 if (osd_err == 1) {
+			 return false;
+		 }
+		 
+		 $("#configapi").attr("disabled","disabled");
+		 $("#configapi_rd").attr("disabled","disabled");
+	     $("#configapi").html('<img src="/static/img/button.gif" style="width:28px;height:16px;"/>');
+	     $("#configapi_rd").html('<img src="/static/img/button.gif" style="width:28px;height:16px;"/>');
+	     $.post(
+	    		 "/salt/openstack/env/add/",
+	    		 {
+	    			 'config_storage_install': config_storage_install,
+	    			 'config_zabbix_install': config_zabbix_install,
+	    			 'config_elk_install': config_elk_install,
+	    			 'compute_minions': compute_minions,
+	    			 'zabbix_agent_minions': zabbix_agent_minions,
+	    			 'elk_agent_minions': elk_agent_minions,
+	    			 'storage_osd_minions': storage_osd_minions,
+	    			 'ceph_osd_devs': JSON.stringify(ceph_osd_devs),
+	    			 'nova_storage_backends': nova_storage_backends,
+	    		 }, function(ret){
+	            if (ret.hasOwnProperty('errors')) {
+	                alert(ret.errors);
+	                $("#configapi").removeAttr("disabled");
+	                $("#configapi_rd").removeAttr("disabled");
+	                $("#configapi").html("完成");
+	                $("#configapi_rd").html("完成");
+	                return false;
+	            } else {
+	                if (ret.ret_code===0) {
+	                    $('#result').html('\
+	                    <div class="alert alert-success fade in">\
+	    					<a href="#" class="close" data-dismiss="alert">&times;</a>\
+	    					<strong>Success!</strong> 添加OpenStack节点配置成功\
+	    				</div>'
+	                    );
+	                } 
+	                
+	                else if (ret.ret_code===1) {
+	                    $('#result').html('\
+	    	                <div class="alert alert-danger fade in">\
+	    	    				<a href="#" class="close" data-dismiss="alert">&times;</a>\
+	    	    				<strong>Error!</strong> 添加OpenStack节点配置失败\
+	    	    			</div>'
+	    	             );
+	                }
+	            };
+	            $("#configapi").removeAttr("disabled");
+	            $("#configapi_rd").removeAttr("disabled");
+	            $("#configapi").html("完成");
+	            $("#configapi_rd").html("完成");
+	        },
+	        "json"
+	     )
+		 
+	});
+}
+
+
 function createOpsConfig() {
 	$(document).ready(function(){
 		/*
@@ -755,7 +926,6 @@ function createOpsConfig() {
 			 * 控制节点HA目前只支持1个或3个节点
 			 */
 			var con_minions_len = controller_minions_list.length
-			console.log(con_minions_len==1);
 			if (con_minions_len != 1 && con_minions_len !=3) {
 				alert("控制节点高可用只支持1个或3个节点");
 				return false;
@@ -770,24 +940,35 @@ function createOpsConfig() {
 			neutron_mode = 'vxlan'
 		}
 		
+		if ($('input[id="neutron_vlan_mode"]:checked')) {
+			neutron_mode = 'vlan'
+		}
+		
 		/*
 		 * 对是否启用监控、elk的条件判断
 		 */
 		if ($(enable_monitor).is(":checked")) {
 			config_zabbix_install = 'true';
 		}
+		else {
+			config_zabbix_install = 'false';
+		}
 		
 		if ($(enable_elk).is(":checked")) {
 			config_elk_install = 'true';
 		}
+		else {
+			config_elk_install = 'false';
+		}
 		
 		
+		var osd_err = 0;
 		/*
 		 * 对是否启用分布式存储的判断
 		 */
 		if ($(enable_distri_storage).is(":checked")) {
 			config_storage_install = 'true';
-			storage_backends = $('input[name="storage"]').val();
+			storage_backends = $('input[name="storage"]:checked').val();
 			console.info(storage_backends);
 			if (storage_backends === 'ceph'){
 				var mon_minions_len = ceph_mon_minions_list.length;
@@ -817,6 +998,7 @@ function createOpsConfig() {
 					var ceph_osd_devs_list = $('input[name=' + ceph_osd_minion + '_osds]:checked');
 					if (ceph_osd_devs_list.length == 0) {
 						alert("未对osd节点" + ceph_osd_minion + "分配任何osd磁盘设备");
+						osd_err = 1;
 						return false;
 					}
 					
@@ -841,6 +1023,9 @@ function createOpsConfig() {
 				
 			}
 		}
+		else {
+			config_storage_install = 'false';
+		}
 		
 		 console.info(ceph_osd_devs, storage_mon_minions, storage_osd_minions);
 		
@@ -857,6 +1042,11 @@ function createOpsConfig() {
 			 }
 		 });
 		 
+		 if (compute_minions === "" || compute_minions === null) {
+		     alert("未选择任何compute节点！");
+		     return false;
+		  }
+		 
 		 /*
 		  * 获取所选的所有控制节点salt agent
 		  */
@@ -869,6 +1059,11 @@ function createOpsConfig() {
 				 controller_minions += $(v).val();
 			 }
 		 });
+		 
+		 if (controller_minions === "" || controller_minions === null) {
+		     alert("未选择任何controller节点！");
+		     return false;
+		  }
 		 
 		 /*
 		  * 获取所选的所有zabbix节点salt agent
@@ -929,6 +1124,10 @@ function createOpsConfig() {
 				vxlan_end = $('input[name="vxlan_end"]').val();
 		 	}
 		 
+		 if (osd_err == 1) {
+			 return false;
+		 }
+		 
 		 $("#configapi").attr("disabled","disabled");
 		 $("#configapi_rd").attr("disabled","disabled");
 	     $("#configapi").html('<img src="/static/img/button.gif" style="width:28px;height:16px;"/>');
@@ -969,8 +1168,8 @@ function createOpsConfig() {
 	                alert(ret.errors);
 	                $("#configapi").removeAttr("disabled");
 	                $("#configapi_rd").removeAttr("disabled");
-	                $("#configapi").html("初始化OpenStack环境");
-	                $("#configapi_rd").html("初始化OpenStack环境");
+	                $("#configapi").html("完成");
+	                $("#configapi_rd").html("完成");
 	                return false;
 	            } else {
 	                if (ret.ret_code===0) {
@@ -993,8 +1192,8 @@ function createOpsConfig() {
 	            };
 	            $("#configapi").removeAttr("disabled");
 	            $("#configapi_rd").removeAttr("disabled");
-	            $("#configapi").html("初始化OpenStack环境");
-	            $("#configapi_rd").html("初始化OpenStack环境");
+	            $("#configapi").html("完成");
+	            $("#configapi_rd").html("完成");
 	        },
 	        "json"
 	     )
@@ -1053,6 +1252,58 @@ function installOpenStack() {
     })
 }
 
+
+function addOpenStack() {
+	$( document ).ready(function() {
+		 $('#result').html("");
+		 $('#info').html("");
+		
+	     $("#deployos").attr("disabled","disabled");
+	     $("#deployos").html('<img src="/static/img/button.gif" style="width:28px;height:16px;"/>');
+	     $.post(
+	    		 "/salt/openstack/api/add/",
+	    		 {
+	    		 }, function(ret){
+	            if (ret.hasOwnProperty('errors')) {
+	                alert(ret.errors);
+	                $("#deployos").removeAttr("disabled");
+	                $("#deployos").html("开始扩容");
+	                return false;
+	            } else {
+	                if (ret.ret_code===0) {
+	                	
+	                    $('#result').html('\
+	                    <div class="alert alert-success fade in">\
+	    					<a href="#" class="close" data-dismiss="alert">&times;</a>\
+	    					<strong>Success!</strong> 扩容程序正在进行中,请查看扩容log......\
+	    				</div>'
+	                    	);
+	                } 
+	                else if (ret.ret_code===1) {
+	                    $('#result').html('\
+	    	                <div class="alert alert-danger fade in">\
+	    	    				<a href="#" class="close" data-dismiss="alert">&times;</a>\
+	    	    				<strong>Error!</strong> 操作失败\
+	    	    			</div>'
+	    	             );
+	                }
+	                else if (ret.ret_code===2) {
+	                    $('#result').html('\
+	    	                <div class="alert alert-warning fade in">\
+	    	    				<a href="#" class="close" data-dismiss="alert">&times;</a>\
+	    	    				<strong>Warning!</strong> 扩容程序已经在运行中，请查看扩容log......\
+	    	    			</div>'
+	    	             );
+	                }
+	            };
+	            $("#deployos").removeAttr("disabled");
+	            $("#deployos").html("开始扩容");
+	        },
+	        "json"
+	     )
+    })
+}
+
 function checkInsPro() {
 	$( document ).ready(function() {
 		$.getJSON("/salt/openstack/api/check_deploy_process/", function(ret){
@@ -1067,7 +1318,7 @@ function checkInsPro() {
 			else if (ret.res===1) {
 				$('#result').html('\
 					<div class="control-group">\
-                    	<label class="controls">安装过程</label>\
+                    	<label class="controls">执行过程</label>\
                         	<div class="controls">' + ret.content + '</div>\
                 	</div>');
 			}
