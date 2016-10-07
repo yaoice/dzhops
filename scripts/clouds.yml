@@ -1,0 +1,16 @@
+clouds:
+    myfavoriteopenstack:
+        auth:
+            auth_url: http://172.16.201.250:35357
+            username: yaoxiabing
+            password: wjj
+            project_name: yaoxiabing
+            domain_name: default 
+        region_name: RegionOne
+
+rebuild:
+    image: 645a7ad5-d72a-44a3-bff9-deb1ad18ecd2
+    adminPass: yao
+    servers:
+        - salt-minion-tt-1
+        - salt-minion-tt-2
