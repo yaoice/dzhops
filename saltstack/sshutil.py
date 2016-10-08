@@ -31,18 +31,7 @@ def auth(**env_args):
     env.password = get('password')
     env.key_filename = get('key_filename')
     env.roledefs = get('roledefs')
-
-
-def read_conf(conf_path):
-    conf_dict = {}
-    with open(conf_path, 'r') as conf_file:
-        pattern = re.compile("\{\%")
-        for line in conf_file:
-            if not pattern.match(line):
-                single_dict = yaml.load(line)
-                if single_dict:
-                    conf_dict.update(single_dict)
-    return conf_dict
+    env.abort_on_prompts = True
 
 
 @task
@@ -82,11 +71,11 @@ def backup_repo_and_pip():
 
 def config_repo_and_pip(yum_url, pip_url, master_hosts):
     yum_repo_baseurl = yum_url
-    pip_index_url =  pip_url
+    pip_index_url = pip_url
 
     global yum_repo_content
     global pip_conf_content
-    global master 
+    global master
     master = master_hosts[0]
     yum_repo_content = '''
 [Liberty]

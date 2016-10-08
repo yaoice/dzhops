@@ -113,7 +113,7 @@ if(!bg){
 		btnClassDefault: 'btn-default',
 		btnClassCompleted: 'btn-success',
 		text:{
-			finished: '初始化OpenStack环境',
+			finished: '完成',
 			next: '下一步',
 			previous: '上一步'
 		}

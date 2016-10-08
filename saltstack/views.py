@@ -20,6 +20,7 @@ from mako import exceptions
 from mako.lookup import TemplateLookup
 
 import logging, json, time, copy, os, subprocess
+from pip._vendor.requests.api import request
 
 # Create your views here.
 
@@ -438,16 +439,24 @@ def addMinion(request):
         root_password = request.POST.get('password', '')
         yum_url = request.POST.get('yum_url', '')
         pip_url = request.POST.get('pip_url', '')
+        private_key = request.POST.get('private_key', '')
+
+        private_key_path = '/tmp/yao.pem'
 
         master_hosts = []
         minion_hosts = None
         master_hosts.append(master)
         minion_hosts = [minion for minion in minions_list.split(',')]
 
+        if private_key:
+            with open(private_key_path, 'wb') as f:
+                f.write(private_key)
+            os.chmod(private_key_path, 0600)
+
         kwargs = {
             'env_user': root_username,
             'env_password': root_password,
-            # 'env_key_filename': '/tmp/yao.pem',
+            'env_key_filename': private_key_path,
             'env_hosts': minion_hosts,
             'env_roledefs': {
                     'master': master_hosts,

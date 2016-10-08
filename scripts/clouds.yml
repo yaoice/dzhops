@@ -14,3 +14,5 @@ rebuild:
     servers:
         - salt-minion-tt-1
         - salt-minion-tt-2
+        - salt-minion-3
+        - salt-minion-1

@@ -595,6 +595,7 @@ function isAddOk() {
         var password = $("input[name='password']").val();
         var yum_url = $("input[name='yum_url']").val();
         var pip_url = $("input[name='pip_url']").val();
+        var private_key = $("#private_key").val();
 		var compute_minions = "";
 		var compute_minions_list = $('input[name="minions_ip"]:checked');
 		 jQuery.each(compute_minions_list, function(i, v){
@@ -637,7 +638,8 @@ function isAddOk() {
 	    			 'username': username,
 	    			 'password': password,
 	    			 'yum_url': yum_url,
-	    			 'pip_url': pip_url
+	    			 'pip_url': pip_url,
+	    			 'private_key': private_key,
 	    		 }, function(ret){
 	            if (ret.hasOwnProperty('errors')) {
 	                alert(ret.errors);
@@ -889,7 +891,7 @@ function createOpsConfig() {
 		/*
 		 * 网络变量定义
 		 */
-		var neutron_mode = "vlan";
+		var neutron_mode = $("input[name='neutron_mode']:checked").val();
 		var vlan_start = "";
 		var vlan_end = "";
 		var vxlan_start = "";
@@ -936,13 +938,7 @@ function createOpsConfig() {
 			console.log("not enable ha");
 		}
 		
-		if ($('input[id="neutron_vxlan_mode"]:checked')) {
-			neutron_mode = 'vxlan'
-		}
-		
-		if ($('input[id="neutron_vlan_mode"]:checked')) {
-			neutron_mode = 'vlan'
-		}
+		console.log(neutron_mode);
 		
 		/*
 		 * 对是否启用监控、elk的条件判断
