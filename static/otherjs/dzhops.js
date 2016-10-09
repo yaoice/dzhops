@@ -616,10 +616,6 @@ function isAddOk() {
 	        	alert('请输入root用户名');
 	        	return false;
 	        }
-	     if (password === '' || password === null) {
-	        	alert('请输入root密码');
-	        	return false;
-	        }
 	     if (yum_url === '' || yum_url === null) {
 	        	alert('请输入yum本地源地址');
 	        	return false;
@@ -693,6 +689,9 @@ function addOpsConfig() {
 		var enable_distri_storage = $('input[name="enable_distri_storage"]');
 		var ceph_osd_minions_list = $('input[name="ceph_osd_minions"]:checked');
 		var ceph_osd_devs = {};
+		
+		var enable_monitor = $('input[name="enable_monitor"]');
+		var enable_elk = $('input[name="enable_elk"]');
 		
 		if ($(enable_distri_storage).is(":checked")) {
 			config_storage_install = 'true';

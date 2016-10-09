@@ -9,10 +9,12 @@ clouds:
         region_name: RegionOne
 
 rebuild:
-    image: 645a7ad5-d72a-44a3-bff9-deb1ad18ecd2
+    image: fefcca2f-ddf1-494f-9f0c-610cff142430
     adminPass: yao
+    volume:
+        nums: 3
+        size: 21
     servers:
-        - salt-minion-tt-1
-        - salt-minion-tt-2
-        - salt-minion-3
-        - salt-minion-1
+        - yao-test-7
+        - yao-test-8
+        - yao-test-9

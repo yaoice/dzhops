@@ -91,10 +91,10 @@ def openstackAddProgram(request):
         request,
         'openstack_add.html',
         {
-         'compute_minions_list': compute_minions_list,
-         'ceph_osd_minions_list': ceph_osd_minions_list,
-         'zabbix_agent_minions_list': zabbix_agent_minions_list,
-         'elk_agent_minions_list': elk_agent_minions_list,
+         'compute_minions_list': minions_list,
+         'ceph_osd_minions_list': minions_list,
+         'zabbix_agent_minions_list': minions_list,
+         'elk_agent_minions_list': minions_list,
          'osd_devices': osd_devices
         }
     )
