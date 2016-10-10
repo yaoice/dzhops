@@ -20,7 +20,6 @@ from mako import exceptions
 from mako.lookup import TemplateLookup
 
 import logging, json, time, copy, os, subprocess
-from pip._vendor.requests.api import request
 
 # Create your views here.
 
@@ -377,11 +376,23 @@ def openstackAddApi(request):
 @login_required
 def checkDeployProcess(request):
     content = ''
+    process_percent = 0
+    executed_modules = []
+    with open('/var/www/html/openstack_deploy/salt_executed_modules') as f:
+        executed_modules = f.readline().split('\n')[0].split(',')
+
+#    print executed_modules
     with open('/var/www/html/openstack_deploy/salt_all.log') as f:
         for line in f:
+            for index, module in enumerate(executed_modules):
+                module_str = "salt " + module + " module implemented <font color=green>[success]"
+                if module_str in line:
+                    process_percent = int((index+1)/float(len(executed_modules))*100)
             line += '</br>'
             content += line
-        ret_json = json.dumps({'res': 1, 'content': content})
+        ret_json = json.dumps({'res': 1,
+                               'content': content,
+                               'process_percent': process_percent})
     return HttpResponse(ret_json, content_type='application/json')
 
 

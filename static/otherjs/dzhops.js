@@ -1301,6 +1301,7 @@ function addOpenStack() {
 
 function checkInsPro() {
 	$( document ).ready(function() {
+		var strip_bar = '';
 		$.getJSON("/salt/openstack/api/check_deploy_process/", function(ret){
 			if (ret.res===2) {
                 $('#result').html('\
@@ -1311,8 +1312,19 @@ function checkInsPro() {
 	           );
 			}
 			else if (ret.res===1) {
+				if (ret.process_percent == 100) {
+					strip_bar = '';
+				}
+				else {
+					strip_bar = 'progress-bar-striped active';
+				}
 				$('#result').html('\
 					<div class="control-group">\
+						<label class="controls">安装进度</label>\
+						<div class="progress">\
+                		<div class="progress-bar ' + strip_bar + '" role="progressbar" aria-valuenow="' + ret.process_percent + '" aria-valuemin="0" aria-valuemax="100"\
+                		style="width:' + ret.process_percent + '%">' + ret.process_percent + '%</div>\
+                  		</div>\
                     	<label class="controls">执行过程</label>\
                         	<div class="controls">' + ret.content + '</div>\
                 	</div>');
