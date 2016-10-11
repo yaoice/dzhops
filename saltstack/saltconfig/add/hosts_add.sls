@@ -20,7 +20,7 @@ pip_index_url: http://99cloudftp:RFCQd9gO@172.16.20.14/ftp/rpms/rpms/pypi/simple
 {% endload %}
 
 {% load_yaml as ntp %}
-servers: node_172_16_214_160
+servers: node_172_16_214_160,node_172_16_214_161,node_172_16_214_162,node_172_16_214_163,node_172_16_214_164,node_172_16_214_165,${add_ntp_servers}
 ntp_server: 202.120.2.100
 {% endload %}
 

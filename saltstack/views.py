@@ -128,12 +128,22 @@ def openstackEnvAdd(request):
         compute_minions_list = compute_minions.split(',')
         if config_storage_install == 'true':
             storage_osd_minions_list = storage_osd_minions.split(',')
-            all_minions = set(
-                              compute_minions_list +
-                              storage_osd_minions_list)
-        elif config_storage_install == 'false':
-            all_minions = set(compute_minions_list)
+            all_minions = compute_minions_list + storage_osd_minions_list
+        else:
+            all_minions = compute_minions_list
 
+        if config_zabbix_install == 'true':
+            zabbix_agent_minions_list = zabbix_agent_minions.split(',')
+            all_minions = all_minions + zabbix_agent_minions_list
+
+        if config_elk_install == 'true':
+            elk_agent_minions_list = elk_agent_minions.split(',')
+            all_minions = all_minions + elk_agent_minions_list
+
+        all_minions = set(all_minions)
+        sort_ntp_minions = list(all_minions)
+        sort_ntp_minions.sort()
+        ntp_minions = ','.join(sort_ntp_minions)
         for id in all_minions:
             id_list = id.split('_')
             ip = '.'.join(id_list[1:])
@@ -142,6 +152,7 @@ def openstackEnvAdd(request):
         neutron_ovs_minions = ','.join(list(set(compute_minions_list)))
 
         salt_config_dict = {
+                    'add_ntp_servers': ntp_minions,
                     'computes': compute_minions,
                     'nova_storage_backends': nova_storage_backends,
                     'zabbix_agents': zabbix_agent_minions,
@@ -230,13 +241,31 @@ def openstackEnvCreate(request):
         if config_storage_install == 'true':
             storage_mon_minions_list = storage_mon_minions.split(',')
             storage_osd_minions_list = storage_osd_minions.split(',')
-            all_minions = set(controller_minions_list +
-                              compute_minions_list +
-                              storage_mon_minions_list +
-                              storage_osd_minions_list)
-        elif config_storage_install == 'false':
-            all_minions = set(controller_minions_list + compute_minions_list)
+            all_minions = (controller_minions_list +
+                           compute_minions_list +
+                           storage_mon_minions_list +
+                           storage_osd_minions_list)
+        else:
+            all_minions = (controller_minions_list + compute_minions_list)
 
+        if config_zabbix_install == 'true':
+            zabbix_server_minions_list = zabbix_server_minions.split(',')
+            zabbix_agent_minions_list = zabbix_agent_minions.split(',')
+            all_minions = (all_minions +
+                           zabbix_server_minions_list +
+                           zabbix_agent_minions_list)
+
+        if config_elk_install == 'true':
+            elk_server_minions_list = elk_server_minions.split(',')
+            elk_agent_minions_list = elk_agent_minions.split(',')
+            all_minions = (all_minions +
+                           elk_server_minions_list +
+                           elk_agent_minions_list)
+
+        all_minions = set(all_minions)
+        sort_ntp_minions = list(all_minions)
+        sort_ntp_minions.sort()
+        ntp_minions = ','.join(sort_ntp_minions)
         for id in all_minions:
             id_list = id.split('_')
             ip = '.'.join(id_list[1:])
@@ -246,6 +275,7 @@ def openstackEnvCreate(request):
                                        controller_minions_list)))
 
         salt_config_dict = {
+                    'ntp_servers': ntp_minions,
                     'controllers': controller_minions,
                     'computes': compute_minions,
                     'zabbix_servers': zabbix_server_minions,
