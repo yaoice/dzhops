@@ -9,12 +9,10 @@ clouds:
         region_name: RegionOne
 
 rebuild:
-    image: fefcca2f-ddf1-494f-9f0c-610cff142430
+    image: ddf63716-88e5-4830-8a98-d55108cb23d4
     adminPass: yao
     volume:
         nums: 3
         size: 21
     servers:
-        - yao-test-7
-        - yao-test-8
         - yao-test-9

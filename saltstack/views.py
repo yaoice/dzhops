@@ -348,7 +348,6 @@ def openstackEnvCreate(request):
             else:
                 with open(output_dir + t, 'w') as out:
                     out.write(output)
-
     try:
         genSaltConfigFile()
     except:
@@ -408,11 +407,13 @@ def checkDeployProcess(request):
     content = ''
     process_percent = 0
     executed_modules = []
-    with open('/var/www/html/openstack_deploy/salt_executed_modules') as f:
+    executed_modules_path = '/var/www/html/openstack_deploy/salt_executed_modules'
+    check_process_log_path = '/var/www/html/openstack_deploy/salt_all.log'
+    with open(executed_modules_path) as f:
         executed_modules = f.readline().split('\n')[0].split(',')
 
 #    print executed_modules
-    with open('/var/www/html/openstack_deploy/salt_all.log') as f:
+    with open(check_process_log_path) as f:
         for line in f:
             for index, module in enumerate(executed_modules):
                 module_str = "salt " + module + " module implemented <font color=green>[success]"
@@ -469,6 +470,20 @@ def deployProgram(request):
 
 @csrf_exempt
 @login_required
+def uploadFile(request):
+    if request.method == 'POST':
+        private_key = request.POST.get('private_key', '')
+        private_key_path = '/tmp/yao.pem'
+        if private_key:
+            with open(private_key_path, 'wb') as f:
+                f.write(private_key)
+            os.chmod(private_key_path, 0600)
+
+        return HttpResponse(status=200)
+
+
+@csrf_exempt
+@login_required
 def addMinion(request):
     '''
 
@@ -480,8 +495,6 @@ def addMinion(request):
         root_password = request.POST.get('password', '')
         yum_url = request.POST.get('yum_url', '')
         pip_url = request.POST.get('pip_url', '')
-        private_key = request.POST.get('private_key', '')
-
         private_key_path = '/tmp/yao.pem'
 
         master_hosts = []
@@ -489,10 +502,8 @@ def addMinion(request):
         master_hosts.append(master)
         minion_hosts = [minion for minion in minions_list.split(',')]
 
-        if private_key:
-            with open(private_key_path, 'wb') as f:
-                f.write(private_key)
-            os.chmod(private_key_path, 0600)
+        if not os.path.exists(private_key_path):
+            open(private_key_path, 'w').close()
 
         kwargs = {
             'env_user': root_username,

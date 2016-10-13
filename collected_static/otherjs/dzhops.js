@@ -595,6 +595,7 @@ function isAddOk() {
         var password = $("input[name='password']").val();
         var yum_url = $("input[name='yum_url']").val();
         var pip_url = $("input[name='pip_url']").val();
+        var private_key = $("#private_key").val();
 		var compute_minions = "";
 		var compute_minions_list = $('input[name="minions_ip"]:checked');
 		 jQuery.each(compute_minions_list, function(i, v){
@@ -615,10 +616,6 @@ function isAddOk() {
 	        	alert('请输入root用户名');
 	        	return false;
 	        }
-	     if (password === '' || password === null) {
-	        	alert('请输入root密码');
-	        	return false;
-	        }
 	     if (yum_url === '' || yum_url === null) {
 	        	alert('请输入yum本地源地址');
 	        	return false;
@@ -637,7 +634,8 @@ function isAddOk() {
 	    			 'username': username,
 	    			 'password': password,
 	    			 'yum_url': yum_url,
-	    			 'pip_url': pip_url
+	    			 'pip_url': pip_url,
+	    			 'private_key': private_key,
 	    		 }, function(ret){
 	            if (ret.hasOwnProperty('errors')) {
 	                alert(ret.errors);
@@ -691,6 +689,9 @@ function addOpsConfig() {
 		var enable_distri_storage = $('input[name="enable_distri_storage"]');
 		var ceph_osd_minions_list = $('input[name="ceph_osd_minions"]:checked');
 		var ceph_osd_devs = {};
+		
+		var enable_monitor = $('input[name="enable_monitor"]');
+		var enable_elk = $('input[name="enable_elk"]');
 		
 		if ($(enable_distri_storage).is(":checked")) {
 			config_storage_install = 'true';
@@ -889,7 +890,7 @@ function createOpsConfig() {
 		/*
 		 * 网络变量定义
 		 */
-		var neutron_mode = "vlan";
+		var neutron_mode = $("input[name='neutron_mode']:checked").val();
 		var vlan_start = "";
 		var vlan_end = "";
 		var vxlan_start = "";
@@ -936,13 +937,7 @@ function createOpsConfig() {
 			console.log("not enable ha");
 		}
 		
-		if ($('input[id="neutron_vxlan_mode"]:checked')) {
-			neutron_mode = 'vxlan'
-		}
-		
-		if ($('input[id="neutron_vlan_mode"]:checked')) {
-			neutron_mode = 'vlan'
-		}
+		console.log(neutron_mode);
 		
 		/*
 		 * 对是否启用监控、elk的条件判断
@@ -1306,6 +1301,7 @@ function addOpenStack() {
 
 function checkInsPro() {
 	$( document ).ready(function() {
+		var strip_bar = '';
 		$.getJSON("/salt/openstack/api/check_deploy_process/", function(ret){
 			if (ret.res===2) {
                 $('#result').html('\
@@ -1316,8 +1312,19 @@ function checkInsPro() {
 	           );
 			}
 			else if (ret.res===1) {
+				if (ret.process_percent == 100) {
+					strip_bar = '';
+				}
+				else {
+					strip_bar = 'progress-bar-striped active';
+				}
 				$('#result').html('\
 					<div class="control-group">\
+						<label class="controls">安装进度</label>\
+						<div class="progress">\
+                		<div class="progress-bar ' + strip_bar + '" role="progressbar" aria-valuenow="' + ret.process_percent + '" aria-valuemin="0" aria-valuemax="100"\
+                		style="width:' + ret.process_percent + '%">' + ret.process_percent + '%</div>\
+                  		</div>\
                     	<label class="controls">执行过程</label>\
                         	<div class="controls">' + ret.content + '</div>\
                 	</div>');

@@ -39,7 +39,8 @@ def disable_selinux():
     selinux_status = sudo('getenforce')
     if selinux_status == 'Enforcing':
         sudo('setenforce 0')
-        sudo("sed -i -r 's/(SELINUX=).*/\1disabled/' /etc/selinux/config")
+        cmd = r"sed -i -r 's/(^SELINUX=).*/\1disabled/g' /etc/selinux/config"
+        sudo(cmd)
         print(green("Disable selinux now"))
     else:
         print(green("Maintain selinux status: %s" % selinux_status))
@@ -50,7 +51,7 @@ def disable_services():
     with settings(warn_only=True):
         for srv in disable_srvs:
             print srv
-            srv_is_exist = sudo('systemctl list-units | grep {} || ""'.format(srv))
+            srv_is_exist = sudo('systemctl list-units | grep {}'.format(srv))
             if srv_is_exist.return_code == 0:
                 srv_status = sudo('systemctl is-active {}'.format(srv))
                 if srv_status.return_code == 0:

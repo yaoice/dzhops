@@ -32,19 +32,27 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">minion节点</label>
                             <div class="col-sm-10">
-<!--                              <input type="text" class="form-control" placeholder="请输入salt minion节点，多个请用逗号‘，’隔开" name="minions" > -->
+                            	<label class="col-sm-10 checkbox inline">
                                 <!-- Multiple Checkboxes -->
                         		{% if minions_list %}
                         			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='minions_ip' type="checkbox" value="{{ minion }}">
+                        				
+                        			<span style="margin-left: 30px"><input name='minions_ip' type="checkbox" value="{{ minion }}"></span>
                         					{{ minion }}
-                        				</label>
+                        				
                         			{% endfor %}
+                        			</br>
+                        			<span style="margin-left: 30px">
+                        			<input id="checkallminions" type="checkbox" value="checkallminions" onclick="checkAllMinions(checkallminions)">
+                        			全选
+                        			</span>
                         		{% else %}
                         		<input type="text" class="form-control" placeholder="未发现任何要添加的minion节点" disabled='disabled'>
                         		{% endif %}
+                        		</label>
+                        		
                             </div>
+                            
                         </div>
                          <div class='form-group'>
                         	<label class="col-sm-2 control-label">ssh用户</label>
@@ -58,10 +66,20 @@
                         		 <input type="password" class="form-control" name="password">
                         	</div>
                         </div>
-                        <div class='form-group'>
+<!--                        <div class='form-group'>
                     		<label class="col-sm-2 control-label">ssh密钥</label>
                     		<textarea style="margin-left: 15px" id="private_key" cols="80" rows="10" placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', or 'ecdsa-sha2-nistp521'"></textarea>
-                    	</div> 
+                    	</div>
+-->
+                    	
+                    	<div class='form-group'>
+                    	<label class="col-sm-2 control-label">ssh密钥</label>
+                    	<div class="col-sm-10">
+                    		<input id="ssh_key" name="input44[]" type="file" multiple class="file-loading">
+                    	</div>
+                    	<div id="errorBlock" class="help-block"></div>
+                    	</div>
+                    	
                         <div class='form-group'>
                           	<label class="col-sm-2 control-label">yum repo url</label>
                         	<div class="col-sm-10">
@@ -79,7 +97,7 @@
             </div>
             <div class="form-group">
                  <div class="col-sm-offset-9 col-sm-1">
-                    <button style="margin-left: 70px" type="button" class="btn btn-primary" onclick="isAddOk()" id="execapi">添加</button>
+                    <button style="margin-left: 100%" type="button" class="btn btn-primary" onclick="isAddOk()" id="execapi">添加</button>
                  </div>
             </div>
             <div class="col-sm-10 col-sm-offset-1" id="result">
@@ -87,19 +105,21 @@
         </form>
     </div>
 
-<!--    
+    
     <script type="text/javascript" src="/static/otherjs/fileinput.min.js"></script>
     <link href="/static/theme/fileinput.min.css" rel="stylesheet" type="text/css">
     <script>
     $(document).on('ready', function() {
-        $("#input-44").fileinput({
-            uploadUrl: 'http://172.16.214.110:8686/1',
+        $("#ssh_key").fileinput({
             maxFilePreviewSize: 10240,
-            allowedFileExtensions: ["txt", "pem"],
+            previewFileType: "any",
+            showUpload: false,
+            browseLabel: "密钥文件上传",
+            allowedFileExtensions: ["txt", "pem", "ini"],
             elErrorContainer: "#errorBlock"
 
         });
     });
     </script>
--->   
+   
 {% endblock %}

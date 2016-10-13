@@ -19,6 +19,7 @@ urlpatterns = patterns(
     url(r'^openstack/api/check_deploy_process/$', 'checkDeployProcess', name='check_deploy_process'),
     url(r'^update/$', 'updateConfig', name='update'),
     url(r'^add/$', 'addMinion', name='add_minion'),
+    url(r'^upload/$', 'uploadFile', name='upload'),
     url(r'^index/$', 'indexMinion', name='index_minion'),
     url(r'^routine/$', 'routineMaintenance', name='routine'),
     url(r'^api/execute/$', 'remoteExecuteApi', name='execute_api'),

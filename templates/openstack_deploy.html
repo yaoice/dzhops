@@ -24,11 +24,12 @@
  <div class="container-fluid" style="width:90%;">
 		<div data-wizard-init>
 		  <ul class="steps">
-			<li data-step="1">控制/计算</li>
-			<li data-step="2">存储</li>
-			<li data-step="3">网络</li>
-			<li data-step="4">监控</li>
-			<li data-step="5">ELK</li>
+			<li data-step="1">控制</li>
+			<li data-step="2">计算</li>
+			<li data-step="3">存储</li>
+			<li data-step="4">网络</li>
+			<li data-step="5">监控</li>
+			<li data-step="6">ELK</li>
 		  </ul>
 		  
 		  <div class="steps-content">
@@ -70,25 +71,27 @@
                         		{% endif %}
             		</div>
        			</div>
-                
-                <div class="form-group">
-                        	<label class="col-sm-2 control-label">compute节点</label>
-                        	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='compute_minions' type="checkbox" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-                        	</div>
-        		 </div>
-        		 </form>
+        		</form>
+        	</div>
+        	
+        	<div data-step="2">
+        		<div class="form-group">
+        		<label class="col-sm-2 control-label">compute节点</label>
+        		<div class="col-sm-10">
+        		{% if minions_list %}
+        			{% for minion in minions_list %}
+        				<label class="col-sm-10 checkbox">
+        					<input name='compute_minions' type="checkbox" value="{{ minion }}">
+        					{{ minion }}
+        				</label>
+        			{% endfor %}
+        		{% endif %}
+        		</div>
+        		</div>
         	</div>
         	
 			
-			<div data-step="2">
+			<div data-step="3">
 			  	<div class="form-group">
 			  		<label class="col-sm-2 control-label">启用分布式存储</label>
 			  		<input name='enable_distri_storage' type="checkbox" data-toggle="collapse" data-target="#storage_back">
@@ -159,7 +162,7 @@
 			</div>
 			
 		<form id="neutronForm" class="form-horizontal">
-			<div data-step="3">
+			<div data-step="4">
 				<div class="form-group">
 			  			<label class="col-sm-2 control-label">网络模式</label>
 			  			<div class="col-sm-10">
@@ -230,7 +233,7 @@
 			</div>
 		</form>
 			
-			<div data-step="4">
+			<div data-step="5">
               <div class="form-group">
                     <label class="col-sm-2 control-label">启用监控</label>
                     <input name='enable_monitor' type="checkbox" data-toggle="collapse" data-target="#enable_monitor">
@@ -267,7 +270,7 @@
               </div>
             </div>
 			
-			<div data-step="5">
+			<div data-step="6">
 			  <div class="form-group">
 			  		<label class="col-sm-2 control-label">启用ELK</label>
 			  		<input name='enable_elk' type="checkbox" data-toggle="collapse" data-target="#enable_elk">

@@ -20,12 +20,12 @@ pip_index_url: http://99cloudftp:RFCQd9gO@172.16.20.14/ftp/rpms/rpms/pypi/simple
 {% endload %}
 
 {% load_yaml as ntp %}
-servers: node_172_16_214_160,node_172_16_214_161,node_172_16_214_162,node_172_16_214_163,node_172_16_214_164,node_172_16_214_165,${add_ntp_servers}
+servers: node_172_16_214_161,node_172_16_214_162,node_172_16_214_163,node_172_16_214_164,node_172_16_214_165,node_172_16_214_168,${add_ntp_servers}
 ntp_server: 202.120.2.100
 {% endload %}
 
 {% load_yaml as ha %}
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 vip: /32
 vip_hostname: openstack_vip
 vip_network_interface: 
@@ -35,28 +35,28 @@ keepalived_virtual_router_id:
 
 {% load_yaml as lb %}
 backends: haproxy
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 {% endload %}
 
 {% load_yaml as messagequeue %}
 backends: rabbitmq
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 {% endload %}
 
 {% load_yaml as cache %}
 backends: memcached
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 {% endload %}
 
 {% load_yaml as mariadb %}
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 arbiters:
 {% endload %}
 
 {% load_yaml as storage %}
 backends: ceph
 servers: ${storage_osd_minions}
-monitors: node_172_16_214_160,node_172_16_214_161,node_172_16_214_162
+monitors: node_172_16_214_162
 osd:
 % if add_ceph_osd_devs_dict:
 % for minion_id, devs in add_ceph_osd_devs_dict.items():
@@ -70,13 +70,13 @@ osd:
 {% endload %}
 
 {% load_yaml as keystone %}
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 keystone_auth_admin_user: admin
 keystone_auth_admin_pass: admin
 {% endload %}
 
 {% load_yaml as glance %}
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 glance_image_backends: ceph
 glance_glusterfs_voluem_bricks: /gfs/glance
 glance_glusterfs_volume_name: glance
@@ -86,7 +86,7 @@ glance_pool_pg_num: 128
 {% endload %}
 
 {% load_yaml as nova %}
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 {% endload %}
 
 {% load_yaml as nova_compute %}
@@ -102,12 +102,12 @@ nova_pool_pg_num: 128
 {% endload %}
 
 {% load_yaml as neutron %}
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 neutron_provider_networks:
   network_flat_networks: "external"
-  network_mappings: "external:br-ex"
-  network_types: "vxlan,flat"
-  network_vxlan_ranges: "1:1024"
+  network_mappings: "external:br-ex,vlan:br-data"
+  network_types: "vxlan,flat,vlan"
+  network_vlan_ranges: "vlan:1:134"
 {% endload %}
 
 {% load_yaml as neutron_agent %}
@@ -115,7 +115,7 @@ servers: ${neutron_ovs_minions}
 {% endload %}
 
 {% load_yaml as cinder %}
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 cinder_glusterfs_volume_name: cinder
 cinder_glusterfs_voluem_bricks: /gfs/cinder
 cinder_glusterfs_volume_replica:
@@ -131,37 +131,37 @@ cinder_nfs_backup_share: "localhost:/backup"
 {% endload %}
 
 {% load_yaml as ceilometer %}
-servers: node_172_16_214_160
-ceilometer_mongodb_servers: node_172_16_214_160
+servers: node_172_16_214_161
+ceilometer_mongodb_servers: node_172_16_214_161
 ceilometer_mongodb_arbiters:
-ceilometer_influxdb_servers: node_172_16_214_160
+ceilometer_influxdb_servers: node_172_16_214_161
 ceilometer_compute_agents: ${computes}
 {% endload %}
 
 {% load_yaml as heat %}
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 {% endload %}
 
 {% load_yaml as horizon %}
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 horizon_animbus_dashboard: true
 {% endload %}
 
 {% load_yaml as zabbix %}
-servers: node_172_16_214_161
+servers: 
 agents: ${zabbix_agents}
 grafana_enabled: true
-zabbix_mariadb_servers: node_172_16_214_161
+zabbix_mariadb_servers: 
 {% endload %}
 
 {% load_yaml as elk %}
-elasticsearch_servers: node_172_16_214_161
-logstash_servers: node_172_16_214_161
+elasticsearch_servers: 
+logstash_servers: 
 logstash_agents: ${elk_agents}
-rabbitmq_servers: node_172_16_214_161
+rabbitmq_servers: 
 {% endload %}
 
 {% load_yaml as docs %}
-servers: node_172_16_214_160
+servers: node_172_16_214_161
 docs_package_url: http://controller2/docs.tar.gz
 {% endload %}
