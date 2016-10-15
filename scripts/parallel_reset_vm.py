@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from multiprocessing import Pool
 from shade import openstack_cloud
 import sys
 import yaml
@@ -42,25 +43,25 @@ class OpenStackAPI(object):
                 deleted_volumes.append(deleted_volume)
         return deleted_volumes
 
-    def rebuild_server(self, servers, image_id,
+    def rebuild_server(self, server, image_id,
                        admin_pass=None,
-                       wait=False):
-        for server in servers:
+                       wait=True,
+                       timeout=180):
             print "server {0} rebuild " \
                 "with image {1} begin.".format(server, image_id)
             server_id = self.__get_server_id(server)
-            self.__conn.rebuild_server(server_id,
-                                       image_id,
-                                       admin_pass,
-                                       wait)
+            self.__conn.rebuild_server(server_id=server_id,
+                                       image_id=image_id,
+                                       admin_pass=admin_pass,
+                                       wait=wait,
+                                       timeout=timeout)
             print "server {0} rebuild " \
                 "with image {1} end.".format(server,
                                              image_id)
 
-    def detach_and_delete_volumes(self, servers,
+    def detach_and_delete_volumes(self, server_name,
                                   wait=True,
                                   timeout=180):
-        for server_name in servers:
             server = self.__get_server(server_name)
             deleted_volumes = self.__get_volumes_by_server(server_name)
             if deleted_volumes:
@@ -85,16 +86,15 @@ class OpenStackAPI(object):
             else:
                 print "server %s has no attached volumes." % (server_name)
 
-    def create_and_attach_volumes(self, servers,
+    def create_and_attach_volumes(self, server_name,
                                   volume_nums, volume_size,
                                   wait=True, timeout=180):
-        for server_name in servers:
             server = self.__get_server(server_name)
             for _ in range(volume_nums):
                 volume = self.__conn.create_volume(size=volume_size,
                                                    wait=wait,
                                                    timeout=timeout)
-                print "create volume {} .".format(volume['id'])
+                print "create volume {}.".format(volume['id'])
                 print "server {0} attach " \
                     "volume {1} begin.".format(server_name, volume['id'])
                 self.__conn.attach_volume(server=server,
@@ -109,6 +109,26 @@ class OpenStackAPI(object):
     def load_config(config_file):
         with open(config_file, 'r') as f:
             return yaml.load(f)
+
+
+def paralley_rebuild_and_manage_volume(server_name,
+                                       image,
+                                       adminPass,
+                                       volume_nums,
+                                       volume_size):
+
+    client = OpenStackAPI(cloud='myfavoriteopenstack')
+    client.detach_and_delete_volumes(server_name,
+                                     wait=True,
+                                     timeout=180)
+    client.rebuild_server(server_name, image, adminPass,
+                          wait=True,
+                          timeout=180)
+    client.create_and_attach_volumes(server_name,
+                                     volume_nums,
+                                     volume_size,
+                                     wait=True,
+                                     timeout=180)
 
 
 if __name__ == '__main__':
@@ -133,19 +153,14 @@ if __name__ == '__main__':
             print "server %s doesn't exist" % server
             sys.exit(1)
 
-    print('*************detach and delete volume process begin*************')
-    client.detach_and_delete_volumes(servers=server_list)
-    print('*************detach and delete volume process end*************\n')
-
-    print('*************rebuild process begin*************')
-    client.rebuild_server(servers=server_list,
-                          image_id=image,
-                          admin_pass=adminPass,
-                          wait=True)
-    print('*************rebuild process end*************\n')
-
-    print('*************create and attach volume process begin*************')
-    client.create_and_attach_volumes(servers=server_list,
-                                     volume_nums=volume_nums,
-                                     volume_size=volume_size)
-    print('*************create and attach volume process end*************')
+    pool = Pool(20)
+    for server in server_list:
+        pool.apply_async(paralley_rebuild_and_manage_volume,
+                         args=(server,
+                               image,
+                               adminPass,
+                               volume_nums,
+                               volume_size,
+                               ))
+    pool.close()
+    pool.join()

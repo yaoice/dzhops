@@ -15,4 +15,12 @@ rebuild:
         nums: 3
         size: 21
     servers:
+        - yao-test-1
+        - yao-test-2
+        - yao-test-3
+        - yao-test-4
+        - yao-test-5
+        - yao-test-6
+        - yao-test-7
+        - yao-test-8
         - yao-test-9

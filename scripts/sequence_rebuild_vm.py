@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from multiprocessing import Pool
 from shade import openstack_cloud
 import sys
 import yaml
@@ -43,23 +42,27 @@ class OpenStackAPI(object):
                 deleted_volumes.append(deleted_volume)
         return deleted_volumes
 
-    def rebuild_server(self, server, image_id,
+    def rebuild_server(self, servers, image_id,
                        admin_pass=None,
-                       wait=False):
+                       wait=True,
+                       timeout=180):
+        for server in servers:
             print "server {0} rebuild " \
                 "with image {1} begin.".format(server, image_id)
             server_id = self.__get_server_id(server)
             self.__conn.rebuild_server(server_id,
                                        image_id,
                                        admin_pass,
-                                       wait)
+                                       wait,
+                                       timeout)
             print "server {0} rebuild " \
                 "with image {1} end.".format(server,
                                              image_id)
 
-    def detach_and_delete_volumes(self, server_name,
+    def detach_and_delete_volumes(self, servers,
                                   wait=True,
                                   timeout=180):
+        for server_name in servers:
             server = self.__get_server(server_name)
             deleted_volumes = self.__get_volumes_by_server(server_name)
             if deleted_volumes:
@@ -84,9 +87,10 @@ class OpenStackAPI(object):
             else:
                 print "server %s has no attached volumes." % (server_name)
 
-    def create_and_attach_volumes(self, server_name,
+    def create_and_attach_volumes(self, servers,
                                   volume_nums, volume_size,
                                   wait=True, timeout=180):
+        for server_name in servers:
             server = self.__get_server(server_name)
             for _ in range(volume_nums):
                 volume = self.__conn.create_volume(size=volume_size,
@@ -116,7 +120,6 @@ if __name__ == '__main__':
         sys.exit(1)
 
     client = OpenStackAPI(cloud='myfavoriteopenstack')
-    client2 = OpenStackAPI(cloud='myfavoriteopenstack')
     image = config_data['rebuild']['image']
     adminPass = config_data['rebuild']['adminPass']
     server_list = config_data['rebuild']['servers']
@@ -132,42 +135,19 @@ if __name__ == '__main__':
             print "server %s doesn't exist" % server
             sys.exit(1)
 
-    import copy_reg
-    import types
+    print('*************detach and delete volume process begin*************')
+    client.detach_and_delete_volumes(servers=server_list)
+    print('*************detach and delete volume process end*************\n')
 
-    def _reduce_method(meth):
-        return (getattr, (meth.__self__, meth.__func__.__name__))
+    print('*************rebuild process begin*************')
+    client.rebuild_server(servers=server_list,
+                          image_id=image,
+                          admin_pass=adminPass,
+                          wait=True)
+    print('*************rebuild process end*************\n')
 
-    copy_reg.pickle(types.MethodType, _reduce_method)
-
-    def test(client):
-        client.detach_and_delete_volumes(server=server_list[0])
-    pool = Pool()
-    pool.map(test, [client])
-    pool.close()
-    pool.join()
-
-#     print('*************detach and delete volume process begin*************')
-#     client.detach_and_delete_volumes(server_name=server_list[0])
-#     client2.detach_and_delete_volumes(server_name=server_list[1])
-#     print('*************detach and delete volume process end*************\n')
-# 
-#     print('*************rebuild process begin*************')
-#     client.rebuild_server(server=server_list[0],
-#                           image_id=image,
-#                           admin_pass=adminPass,
-#                           wait=True)
-#     client2.rebuild_server(server=server_list[1],
-#                            image_id=image,
-#                            admin_pass=adminPass,
-#                            wait=True)
-#     print('*************rebuild process end*************\n')
-# 
-#     print('*************create and attach volume process begin*************')
-#     client.create_and_attach_volumes(server_name=server_list[0],
-#                                      volume_nums=volume_nums,
-#                                      volume_size=volume_size)
-#     client2.create_and_attach_volumes(server_name=server_list[1],
-#                                       volume_nums=volume_nums,
-#                                       volume_size=volume_size)
-#     print('*************create and attach volume process end*************')
+    print('*************create and attach volume process begin*************')
+    client.create_and_attach_volumes(servers=server_list,
+                                     volume_nums=volume_nums,
+                                     volume_size=volume_size)
+    print('*************create and attach volume process end*************')
