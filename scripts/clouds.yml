@@ -13,7 +13,7 @@ rebuild:
     adminPass: yao
     volume:
         nums: 3
-        size: 21
+        size: 22
     servers:
         - yao-test-1
         - yao-test-2
@@ -24,3 +24,24 @@ rebuild:
         - yao-test-7
         - yao-test-8
         - yao-test-9
+        - yao-add-1
+        - yao-add-2
+        - yao-add-3
+        - yao-add-4
+        - yao-add-5
+        - yao-add-6
+        - yao-add-7
+        - yao-add-8
+        - yao-add-9
+        - yao-add-10
+        - yao-add-11
+        - yao-test-add-1
+        - yao-test-add-2
+        - yao-test-add-3
+        - yao-test-add-4
+        - yao-test-add-5
+        - yao-test-add-6
+        - yao-test-add-7
+        - yao-test-add-8
+        - yao-test-add-9
+        - yao-test-add-10
