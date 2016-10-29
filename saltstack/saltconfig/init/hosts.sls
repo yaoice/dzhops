@@ -93,7 +93,7 @@ servers: ${controllers}
 
 {% load_yaml as nova_compute %}
 servers: ${computes}
-nova_virt_type: qemu
+nova_virt_type: ${virt_type}
 nova_libvirt_inject_password: True
 % if config_storage_install == 'false':
 nova_instances_backends: file

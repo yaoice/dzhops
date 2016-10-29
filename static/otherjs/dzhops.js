@@ -910,6 +910,7 @@ function createOpsConfig() {
 		var storage_osd_minions = "";
 		var config_storage_install = "false";
 		var storage_backends = "file";
+		var virt_type = $('input[name="virt_type"]:checked').val();
 		
 		var compute_minions_list = $('input[name="compute_minions"]:checked');
 		var controller_minions_list = $('input[name="controller_minions"]:checked');
@@ -1169,6 +1170,7 @@ function createOpsConfig() {
 	    			 'keepalived_vip_interface': keepalived_vip_interface,
 	    			 'controller_minions': controller_minions,
 	    			 'compute_minions': compute_minions,
+	    			 'virt_type': virt_type,
 	    			 'zabbix_server_minions': zabbix_server_minions,
 	    			 'zabbix_agent_minions': zabbix_agent_minions,
 	    			 'elk_server_minions': elk_server_minions,

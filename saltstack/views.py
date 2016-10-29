@@ -210,6 +210,7 @@ def openstackEnvCreate(request):
         keepalived_vip_interface = \
             request.POST.get('keepalived_vip_interface', '')
         controller_minions = request.POST.get('controller_minions', '')
+        virt_type = request.POST.get('virt_type', '')
         compute_minions = request.POST.get('compute_minions', '')
         zabbix_server_minions = request.POST.get('zabbix_server_minions', '')
         zabbix_agent_minions = request.POST.get('zabbix_agent_minions', '')
@@ -278,6 +279,7 @@ def openstackEnvCreate(request):
                     'ntp_servers': ntp_minions,
                     'controllers': controller_minions,
                     'computes': compute_minions,
+                    'virt_type': virt_type,
                     'zabbix_servers': zabbix_server_minions,
                     'zabbix_agents': zabbix_agent_minions,
                     'elk_servers': elk_server_minions,

@@ -95,7 +95,7 @@ servers: ${controllers}
 
 {% load_yaml as nova_compute %}
 servers: $__{computes}
-nova_virt_type: qemu
+nova_virt_type: ${virt_type}
 nova_libvirt_inject_password: True
 nova_instances_backends: $__{nova_storage_backends}
 nova_glusterfs_voluem_bricks: /gfs/nova

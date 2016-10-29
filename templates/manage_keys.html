@@ -60,6 +60,7 @@
                                 <input id="checkall" type="checkbox" value="checkall" onclick="checkAll(checkall)">全选
                             </label>
                         </th>
+                        <th class="text-center">ID</th>
                         <th class="text-center">Minion ID</th>
                         <th class="text-center">Minion IP</th>
                     </tr>
@@ -74,6 +75,7 @@
                                                 <input name="minion_id" type="checkbox" value="{{ id }}">
                                             </label>
                                         </td>
+                                        <td class="text-center">{{ forloop.parentloop.counter }}</td>
                                         <td class="text-center">{{ id }}</td>
                                         <td class="text-center">{{ ip }}</td>
                                     </tr>

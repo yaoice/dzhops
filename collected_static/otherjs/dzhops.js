@@ -11,6 +11,15 @@ function checkAll(chkall) {
     }
 }
 
+function checkAllMinions(chkall) {
+    if(chkall.checked){
+        $("input[name='minions_ip']").each(function(){this.checked=true;});
+    }else{
+        $("input[name='minions_ip']").each(function(){this.checked=false;});
+    }
+}
+
+
 //获取复选框的值
 function getCheckValue(action) {
     var minion_id = "";
@@ -345,13 +354,7 @@ $(document).ready(function() {
             validating: 'glyphicon glyphicon-refresh'
         },
 	      fields: {
-	    	  minions_ip: {
-	    		  validators: {
-	    			  notEmpty: {
-	                      message: '未选择任何minions节点'
-	                  },
-	    		  	}
-	    	  	},
+	    	  
 	    	  username: {
 	    		  validators: {
 	    			  notEmpty: {
@@ -372,7 +375,7 @@ $(document).ready(function() {
 	                      message: 'yum源地址需要填写'
 	                  },
 	                  regexp: {
-	                	  regexp: "^((https|http|ftp|rtsp|mms)?://)"  
+	                	  regexp: "^(https|http|ftp|rtsp|mms)://"  
                 		        + "?(([0-9A-z_!~*'().&=+$%-]+: )?[0-9A-z_!~*'().&=+$%-]+@)?"  
                 		        + "(([0-9]{1,3}\.){3}[0-9]{1,3}"  
                 		        + "|" 
@@ -392,7 +395,7 @@ $(document).ready(function() {
 	  	                      message: 'pip源地址需要填写'
 	  	                  },
 	  	                  regexp: {
-	  	                	  regexp: "^((https|http|ftp|rtsp|mms)?://)"  
+	  	                	  regexp: "^(https|http|ftp|rtsp|mms)://"  
                 		        + "?(([0-9A-z_!~*'().&=+$%-]+: )?[0-9A-z_!~*'().&=+$%-]+@)?"  
                 		        + "(([0-9]{1,3}\.){3}[0-9]{1,3}"  
                 		        + "|" 
@@ -595,7 +598,35 @@ function isAddOk() {
         var password = $("input[name='password']").val();
         var yum_url = $("input[name='yum_url']").val();
         var pip_url = $("input[name='pip_url']").val();
-        var private_key = $("#private_key").val();
+//        var private_key = $("#private_key").val();
+//        var fileInput = $("#ssh_key");
+        var fileInput = document.getElementById("ssh_key");
+        var private_key = '';
+       
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+        	console.log("Great success! All the File APIs are supported.");
+			} 
+		else {
+			 alert('The File APIs are not fully supported in this browser.');
+			}
+        
+        var reader = new FileReader();
+        if (fileInput.files.length > 0) {
+        	reader.readAsText(fileInput.files[0]);
+        	reader.onload = function(evt){
+        		private_key = evt.target.result;
+        		$.post(
+        	    		 "/salt/upload/",
+        	    		 {
+        	    			'private_key': private_key,
+        	    		 }, function(ret){
+        	    			 return true;
+        	    		 },
+        	 	        "json"
+        	 	     )
+        	    }
+        	};
+        
 		var compute_minions = "";
 		var compute_minions_list = $('input[name="minions_ip"]:checked');
 		 jQuery.each(compute_minions_list, function(i, v){
@@ -635,7 +666,6 @@ function isAddOk() {
 	    			 'password': password,
 	    			 'yum_url': yum_url,
 	    			 'pip_url': pip_url,
-	    			 'private_key': private_key,
 	    		 }, function(ret){
 	            if (ret.hasOwnProperty('errors')) {
 	                alert(ret.errors);
