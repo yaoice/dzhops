@@ -18,7 +18,7 @@ def get_osd_dev(*args):
     '''
 
     context = pyudev.Context()
-    pattern = re.compile('^/dev/vd[a-z]')
+    pattern = re.compile('^/dev/[v|s]d[a-z]')
 
     osd_devices = []
     for device in context.list_devices(DEVTYPE='disk'):

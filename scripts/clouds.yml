@@ -2,21 +2,19 @@ clouds:
     myfavoriteopenstack:
         auth:
             auth_url: http://172.16.201.250:35357
-            username: yaoxiabing
-            password: wjj
-            project_name: yaoxiabing
+            username: zhurong
+            password: '99cloud!@#'
+            project_name: zhurong
             domain_name: default 
         region_name: RegionOne
 
 rebuild:
     image: ddf63716-88e5-4830-8a98-d55108cb23d4
-    adminPass: yao
+    adminPass: password
     volume:
         nums: 3
         size: 22
     servers:
-       - yao-test-saltui-1
-       - yao-test-saltui-2
-       - yao-test-saltui-3
-       - yao-test-saltui-4
-       - yao-test-saltui-5
+       - vmha1
+       - vmha2
+       - vmha3

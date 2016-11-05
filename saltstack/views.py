@@ -364,7 +364,7 @@ def openstackEnvCreate(request):
 @login_required
 def openstackDeployApi(request):
     cmd_dir = "/srv/openstack-deploy/salt/dev/scripts/"
-    cmd_name = "all.sh"
+    cmd_name = "deploy.sh"
 
     if isThisRunning(cmd_dir, cmd_name):
         ret_json = json.dumps({'ret_code': 2})
@@ -375,7 +375,7 @@ def openstackDeployApi(request):
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
     except:
-        print "execute all.sh failed"
+        print "execute deploy.sh failed"
         ret_json = json.dumps({'ret_code': 1})
         return HttpResponse(ret_json, content_type='application/json')
     ret_json = json.dumps({'ret_code': 0})
@@ -397,7 +397,7 @@ def openstackAddApi(request):
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
     except:
-        print "execute all.sh failed"
+        print "execute add.sh failed"
         ret_json = json.dumps({'ret_code': 1})
         return HttpResponse(ret_json, content_type='application/json')
     ret_json = json.dumps({'ret_code': 0})
