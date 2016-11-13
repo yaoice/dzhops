@@ -24,6 +24,9 @@ class OpenStackAPI(object):
     def __get_server_id(self, name_or_id):
         return self.__conn.get_server_id(name_or_id)
 
+    def __get_neutronclient(self):
+        return self.__conn.neutron_client
+
     def __get_server(self, name_or_id=None, filters=None, detailed=False):
         return self.__conn.get_server(name_or_id=name_or_id,
                                       filters=filters,
@@ -32,6 +35,31 @@ class OpenStackAPI(object):
     def __get_volume(self, name_or_id, filters=None):
         return self.__conn.get_volume(name_or_id=name_or_id,
                                       filters=filters)
+
+    def __get_port_by_ip(self, ip):
+        port = None
+        port_list = self.__conn.list_ports({"tenant_id": project_id})
+        for p in port_list:
+            if p['fixed_ips'][0]['ip_address'] == ip:
+                port = p
+        return port
+
+    def __update_port(self, name_or_id, **kwargs):
+        print kwargs
+        self.__conn.update_port(name_or_id=name_or_id,
+                                **kwargs)
+
+    def __get_ports_by_server(self, server_name_or_id):
+        server_ports = []
+        server = self.__get_server(server_name_or_id)
+        if server.networks:
+            for _, ip in server.networks.iteritems():
+                port = self.__get_port_by_ip(ip[0])
+                if port:
+                    server_ports.append(port['id'])
+                else:
+                    print "no port id with ip %s" % ip[0]
+        return server_ports
 
     def __get_volumes_by_server(self, server_name_or_id, cache=True):
         server = self.__get_server(server_name_or_id)
@@ -42,6 +70,23 @@ class OpenStackAPI(object):
                 deleted_volume = volume['attachments'][0]['volume_id']
                 deleted_volumes.append(deleted_volume)
         return deleted_volumes
+
+    def disable_server_port_security(self, server_name_or_id):
+        server_ports = self.__get_ports_by_server(server_name_or_id)
+        neutronclient = self.__get_neutronclient()
+        body = {
+                 "port": {
+                          "security_groups": [],
+                          "port_security_enabled": False
+                    }
+                }
+
+        for port_id in server_ports:
+            neutronclient.update_port(port=port_id,
+                                      body=body
+                                      )
+            print "disable port security for port id " \
+                "{}".format(port_id)
 
     def rebuild_server(self, server, image_id,
                        admin_pass=None,
@@ -115,7 +160,8 @@ def paralley_rebuild_and_manage_volume(server_name,
                                        image,
                                        adminPass,
                                        volume_nums,
-                                       volume_size):
+                                       volume_size,
+                                       disable_port_security):
 
     client = OpenStackAPI(cloud='myfavoriteopenstack')
     client.detach_and_delete_volumes(server_name,
@@ -129,6 +175,8 @@ def paralley_rebuild_and_manage_volume(server_name,
                                      volume_size,
                                      wait=True,
                                      timeout=180)
+    if disable_port_security:
+        client.disable_server_port_security(server_name_or_id=server_name)
 
 
 if __name__ == '__main__':
@@ -143,6 +191,10 @@ if __name__ == '__main__':
     server_list = config_data['rebuild']['servers']
     volume_nums = config_data['rebuild']['volume']['nums']
     volume_size = config_data['rebuild']['volume']['size']
+    disable_port_security = config_data['rebuild']['disable_port_security']
+    global project_id
+    project_id = \
+        config_data['clouds']['myfavoriteopenstack']['auth']['project_id']
 
     if not client.is_exist_image(image):
         print "image %s doesn't exist" % image
@@ -153,6 +205,7 @@ if __name__ == '__main__':
             print "server %s doesn't exist" % server
             sys.exit(1)
 
+
     pool = Pool(20)
     for server in server_list:
         pool.apply_async(paralley_rebuild_and_manage_volume,
@@ -161,6 +214,7 @@ if __name__ == '__main__':
                                adminPass,
                                volume_nums,
                                volume_size,
+                               disable_port_security,
                                ))
     pool.close()
     pool.join()

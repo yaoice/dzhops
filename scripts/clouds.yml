@@ -2,19 +2,20 @@ clouds:
     myfavoriteopenstack:
         auth:
             auth_url: http://172.16.201.250:35357
-            username: zhurong
-            password: '99cloud!@#'
-            project_name: zhurong
-            domain_name: default 
+            username: yaoxiabing
+            password: 'wjj'
+            project_id: 481ebe17d3be4915ab33ca630f6c8655
+            domain_name: default
         region_name: RegionOne
 
 rebuild:
     image: ddf63716-88e5-4830-8a98-d55108cb23d4
-    adminPass: password
+    adminPass: yao
+    disable_port_security: True
     volume:
         nums: 3
         size: 22
     servers:
-       - vmha1
-       - vmha2
-       - vmha3
+       - yao-r-test-1
+       - yao-r-test-2
+       - yao-r-test-3
