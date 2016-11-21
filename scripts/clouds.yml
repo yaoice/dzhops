@@ -9,13 +9,15 @@ clouds:
         region_name: RegionOne
 
 rebuild:
-    image: ddf63716-88e5-4830-8a98-d55108cb23d4
+    image: 7cca82e7-0510-485b-b2f6-c6b478b14ad2
     adminPass: yao
-    disable_port_security: True
+    disable_port_security: False
     volume:
         nums: 3
         size: 22
     servers:
-       - yao-r-test-1
-       - yao-r-test-2
-       - yao-r-test-3
+       - yao-r-test-add-1
+       - yao-r-test-add-2
+       - yao-r-test-add-3
+       - yao-r-test-add-4
+       - yao-r-test-add-5

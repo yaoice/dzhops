@@ -1346,6 +1346,7 @@ function checkInsPro() {
 			else if (ret.res===1) {
 				if (ret.process_percent == 100) {
 					strip_bar = '';
+					window.clearTimeout(chkInsPro_id);
 				}
 				else {
 					strip_bar = 'progress-bar-striped active';
@@ -1362,7 +1363,7 @@ function checkInsPro() {
                 	</div>');
 			}
 		})
-                setTimeout("checkInsPro()", 5000);
+               var chkInsPro_id = window.setTimeout("checkInsPro()", 5000);
 	})
 }
 

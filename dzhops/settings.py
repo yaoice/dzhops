@@ -114,6 +114,6 @@ SALT_API = {
 
 # log setting
 try:
-    import config_log
+    from config_log import LOGGING
 except:
     pass

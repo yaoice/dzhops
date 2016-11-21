@@ -8,7 +8,7 @@ from hostlist.models import Dzhuser, DataCenter, HostList
 import json, logging
 
 
-log = logging.getLogger('dzhops')
+log = logging.getLogger('opsmaster')
 
 @login_required
 def assetList(request):

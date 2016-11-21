@@ -23,7 +23,7 @@ import logging, json, time, copy, os, subprocess
 
 # Create your views here.
 
-log = logging.getLogger('dzhops')
+log = logging.getLogger('opsmaster')
 
 
 @login_required
@@ -176,7 +176,7 @@ def openstackEnvAdd(request):
             tpl = env.get_template(t)
             output = tpl.render(**salt_config_dict)
         except:
-            print exceptions.text_error_template().render()
+            log.error(exceptions.text_error_template().render())
             ret_json = json.dumps({'ret_code': 1})
             return HttpResponse(ret_json, content_type='application/json')
         if 'hosts_add' in t:
@@ -339,7 +339,7 @@ def openstackEnvCreate(request):
                 tpl = env.get_template(t)
                 output = tpl.render(**salt_config_dict)
             except:
-                print exceptions.text_error_template().render()
+                log.error(exceptions.text_error_template().render())
                 ret_json = json.dumps({'ret_code': 1})
                 return HttpResponse(ret_json, content_type='application/json')
             if 'add' in t:
@@ -353,7 +353,7 @@ def openstackEnvCreate(request):
     try:
         genSaltConfigFile()
     except:
-        print "generate salt config files error"
+        log.error("generate salt config files error")
         ret_json = json.dumps({'ret_code': 1})
         return HttpResponse(ret_json, content_type='application/json')
     ret_json = json.dumps({'ret_code': 0})
@@ -375,7 +375,7 @@ def openstackDeployApi(request):
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
     except:
-        print "execute deploy.sh failed"
+        log.error("execute deploy.sh failed")
         ret_json = json.dumps({'ret_code': 1})
         return HttpResponse(ret_json, content_type='application/json')
     ret_json = json.dumps({'ret_code': 0})
@@ -397,7 +397,7 @@ def openstackAddApi(request):
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
     except:
-        print "execute add.sh failed"
+        log.error("execute add.sh failed")
         ret_json = json.dumps({'ret_code': 1})
         return HttpResponse(ret_json, content_type='application/json')
     ret_json = json.dumps({'ret_code': 0})
@@ -414,6 +414,7 @@ def checkDeployProcess(request):
     with open(executed_modules_path) as f:
         executed_modules = f.readline().split('\n')[0].split(',')
 
+    log.debug("check install process")
 #    print executed_modules
     with open(check_process_log_path) as f:
         for line in f:

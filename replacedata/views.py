@@ -13,7 +13,7 @@ from dzhops import settings
 import os, time, logging, json
 
 # Create your views here.
-log = logging.getLogger('dzhops')
+log = logging.getLogger('opsmaster')
 
 @login_required
 def repairHistoryData(request):

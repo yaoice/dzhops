@@ -15,7 +15,7 @@ import os
 import shutil
 import logging
 
-log = logging.getLogger('dzhops')
+log = logging.getLogger('opsmaster')
 
 
 def imageResize(img, username):

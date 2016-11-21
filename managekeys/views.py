@@ -15,7 +15,7 @@ import logging
 import json
 # Create your views here.
 
-log = logging.getLogger('dzhops')
+log = logging.getLogger('opsmaster')
 
 
 @login_required

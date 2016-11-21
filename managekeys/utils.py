@@ -2,7 +2,7 @@
 from hostlist.models import HostList, Dzhuser
 import logging
 
-log = logging.getLogger('dzhops')
+log = logging.getLogger('opsmaster')
 
 def clearUpMinionKyes(idlist, dc, eg):
     '''

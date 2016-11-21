@@ -8,7 +8,7 @@ from dzhops import settings
 
 import logging, time, json, re, subprocess
 
-log = logging.getLogger('dzhops')
+log = logging.getLogger('opsmaster')
 
 def moduleDetection(module, user):
     '''
