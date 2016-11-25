@@ -1,0 +1,11 @@
+clouds:
+    myfavoriteopenstack:
+        auth:
+            auth_url: http://172.16.201.250:35357
+            username: yaoxiabing
+            password: 'xxxxxxxxx'
+            project_id: 481ebe17d3be4915ab33ca630f6c8655
+            domain_name: default
+        region_name: RegionOne
+
+excel_name: 'test.xlsx'
