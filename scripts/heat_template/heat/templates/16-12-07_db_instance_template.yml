@@ -1,0 +1,173 @@
+heat_template_version: 2015-04-30
+
+description: create instances template for cr-dev.
+
+parameters:
+  image:
+    type: string
+    description: OpenStack deploy image.
+    default: ubuntu-16.04
+    constraints:
+    - custom_constraint: glance.image
+      description: >
+        Name or ID of Image for deploy.
+
+  flavor:
+    type: string
+    description: OpenStack deploy flavor.
+    default: 1C_1G_80GB
+    constraints:
+    - custom_constraint: nova.flavor
+      description: Flavor name for template.
+
+  net:
+    type: string
+    description: OpenStack deploy network.
+    default: dev-net-214
+    constraints:
+    - custom_constraint: neutron.network
+      description: >
+        Network name for template.
+
+  volume_size:
+    type: number
+    description: Instance volume size.
+    default: 100
+
+resources:
+
+  db1_volume_os:
+    type: OS::Cinder::Volume
+    properties:
+      name: db1_volume_os
+      size: 40
+      image: { get_param: image }
+
+  db1:
+    type: OS::Nova::Server
+    properties:
+      name: db1
+      flavor: { get_param: flavor }
+      block_device_mapping_v2: [{"device_name": /dev/vda, "volume_id": { get_resource: db1_volume_os }, "delete_on_termination": true }]
+      networks:
+      - network: { get_param: net }
+
+
+  db1_volume1:
+    type: OS::Cinder::Volume
+    properties:
+      name: db1_volume1
+      size: { get_param: volume_size }
+
+  db1_attach_volume1:
+    type: OS::Cinder::VolumeAttachment
+    depends_on: [ db1, db1_volume1 ]
+    properties:
+      volume_id: { get_resource: db1_volume1 }
+      instance_uuid: { get_resource: db1 }
+      mountpoint:
+
+  db1_volume2:
+    type: OS::Cinder::Volume
+    properties:
+      name: db1_volume2
+      size: { get_param: volume_size }
+
+  db1_attach_volume2:
+    type: OS::Cinder::VolumeAttachment
+    depends_on: [ db1, db1_volume2 ]
+    properties:
+      volume_id: { get_resource: db1_volume2 }
+      instance_uuid: { get_resource: db1 }
+      mountpoint:
+
+  db2_volume_os:
+    type: OS::Cinder::Volume
+    properties:
+      name: db2_volume_os
+      size: 40
+      image: { get_param: image }
+
+  db2:
+    type: OS::Nova::Server
+    properties:
+      name: db2
+      flavor: { get_param: flavor }
+      block_device_mapping_v2: [{"device_name": /dev/vda, "volume_id": { get_resource: db2_volume_os }, "delete_on_termination": true }]
+      networks:
+      - network: { get_param: net }
+
+
+  db2_volume1:
+    type: OS::Cinder::Volume
+    properties:
+      name: db2_volume1
+      size: { get_param: volume_size }
+
+  db2_attach_volume1:
+    type: OS::Cinder::VolumeAttachment
+    depends_on: [ db2, db2_volume1 ]
+    properties:
+      volume_id: { get_resource: db2_volume1 }
+      instance_uuid: { get_resource: db2 }
+      mountpoint:
+
+  db2_volume2:
+    type: OS::Cinder::Volume
+    properties:
+      name: db2_volume2
+      size: { get_param: volume_size }
+
+  db2_attach_volume2:
+    type: OS::Cinder::VolumeAttachment
+    depends_on: [ db2, db2_volume2 ]
+    properties:
+      volume_id: { get_resource: db2_volume2 }
+      instance_uuid: { get_resource: db2 }
+      mountpoint:
+
+  db3_volume_os:
+    type: OS::Cinder::Volume
+    properties:
+      name: db3_volume_os
+      size: 40
+      image: { get_param: image }
+
+  db3:
+    type: OS::Nova::Server
+    properties:
+      name: db3
+      flavor: { get_param: flavor }
+      block_device_mapping_v2: [{"device_name": /dev/vda, "volume_id": { get_resource: db3_volume_os }, "delete_on_termination": true }]
+      networks:
+      - network: { get_param: net }
+
+
+  db3_volume1:
+    type: OS::Cinder::Volume
+    properties:
+      name: db3_volume1
+      size: { get_param: volume_size }
+
+  db3_attach_volume1:
+    type: OS::Cinder::VolumeAttachment
+    depends_on: [ db3, db3_volume1 ]
+    properties:
+      volume_id: { get_resource: db3_volume1 }
+      instance_uuid: { get_resource: db3 }
+      mountpoint:
+
+  db3_volume2:
+    type: OS::Cinder::Volume
+    properties:
+      name: db3_volume2
+      size: { get_param: volume_size }
+
+  db3_attach_volume2:
+    type: OS::Cinder::VolumeAttachment
+    depends_on: [ db3, db3_volume2 ]
+    properties:
+      volume_id: { get_resource: db3_volume2 }
+      instance_uuid: { get_resource: db3 }
+      mountpoint:
+

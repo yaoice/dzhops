@@ -11,13 +11,11 @@ clouds:
 rebuild:
     image: 7cca82e7-0510-485b-b2f6-c6b478b14ad2
     adminPass: yao
-    disable_port_security: False
+    disable_port_security: True
     volume:
         nums: 3
         size: 22
     servers:
-       - yao-r-test-add-1
-       - yao-r-test-add-2
-       - yao-r-test-add-3
-       - yao-r-test-add-4
-       - yao-r-test-add-5
+       - yao-test-ntp-1
+       - yao-test-ntp-2
+       - yao-test-ntp-3

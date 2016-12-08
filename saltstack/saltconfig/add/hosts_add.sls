@@ -1,8 +1,8 @@
 # hosts.sls
 
 {% load_yaml as install_plugin %}
-config_ha_install: true
-config_lb_install: true
+config_ha_install: false
+config_lb_install: false
 config_storage_install: ${config_storage_install}
 config_cinder_install: true
 config_neutron_install: true
@@ -20,43 +20,43 @@ pip_index_url: http://99cloudftp:RFCQd9gO@172.16.20.14/ftp/rpms/rpms/pypi/simple
 {% endload %}
 
 {% load_yaml as ntp %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197,${add_ntp_servers}
+servers: node_172_16_214_216,node_172_16_214_217,node_172_16_214_218,${add_ntp_servers}
 ntp_server: 202.120.2.100
 {% endload %}
 
 {% load_yaml as ha %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
-vip: 172.16.214.5/32
+servers: node_172_16_214_216
+vip: /32
 vip_hostname: openstack_vip
-vip_network_interface: eth0
+vip_network_interface: 
 vip_set_method: keepalived
-keepalived_virtual_router_id: 67
+keepalived_virtual_router_id: 
 {% endload %}
 
 {% load_yaml as lb %}
 backends: haproxy
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 {% endload %}
 
 {% load_yaml as messagequeue %}
 backends: rabbitmq
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 {% endload %}
 
 {% load_yaml as cache %}
 backends: memcached
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 {% endload %}
 
 {% load_yaml as mariadb %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 arbiters:
 {% endload %}
 
 {% load_yaml as storage %}
-backends: ceph
+backends: file
 servers: ${storage_osd_minions}
-monitors: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+monitors: 
 osd:
 % if add_ceph_osd_devs_dict:
 % for minion_id, devs in add_ceph_osd_devs_dict.items():
@@ -70,14 +70,14 @@ osd:
 {% endload %}
 
 {% load_yaml as keystone %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 keystone_auth_admin_user: admin
 keystone_auth_admin_pass: admin
 {% endload %}
 
 {% load_yaml as glance %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
-glance_image_backends: ceph
+servers: node_172_16_214_216
+glance_image_backends: file
 glance_glusterfs_voluem_bricks: /gfs/glance
 glance_glusterfs_volume_name: glance
 glance_glusterfs_volume_replica:
@@ -86,7 +86,7 @@ glance_pool_pg_num: 128
 {% endload %}
 
 {% load_yaml as nova %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 {% endload %}
 
 {% load_yaml as nova_compute %}
@@ -102,12 +102,12 @@ nova_pool_pg_num: 128
 {% endload %}
 
 {% load_yaml as neutron %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 neutron_provider_networks:
   network_flat_networks: "external"
   network_mappings: "external:br-ex"
   network_types: "vxlan,flat"
-  network_vxlan_ranges: "1:1234"
+  network_vxlan_ranges: "1:10000"
 {% endload %}
 
 {% load_yaml as neutron_agent %}
@@ -115,35 +115,30 @@ servers: ${neutron_ovs_minions}
 {% endload %}
 
 {% load_yaml as cinder %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 cinder_glusterfs_volume_name: cinder
 cinder_glusterfs_voluem_bricks: /gfs/cinder
 cinder_glusterfs_volume_replica:
 cinder_pool_pg_num: 128
-cinder_backends:
-  ceph:
-    volume_driver: "cinder.volume.drivers.rbd.RBDDriver"
-    rbd_pool: volumes
-    volume_backend_name: ceph
 cinder_service_backup_program_enabled: false
 cinder_service_backup_driver: cinder.backup.drivers.nfs
 cinder_nfs_backup_share: "localhost:/backup"
 {% endload %}
 
 {% load_yaml as ceilometer %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
-ceilometer_mongodb_servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
+ceilometer_mongodb_servers: node_172_16_214_216
 ceilometer_mongodb_arbiters:
-ceilometer_influxdb_servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+ceilometer_influxdb_servers: node_172_16_214_216
 ceilometer_compute_agents: ${computes}
 {% endload %}
 
 {% load_yaml as heat %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 {% endload %}
 
 {% load_yaml as horizon %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 horizon_animbus_dashboard: true
 {% endload %}
 
@@ -162,6 +157,6 @@ rabbitmq_servers:
 {% endload %}
 
 {% load_yaml as docs %}
-servers: node_172_16_214_195,node_172_16_214_196,node_172_16_214_197
+servers: node_172_16_214_216
 docs_package_url: http://controller2/docs.tar.gz
 {% endload %}

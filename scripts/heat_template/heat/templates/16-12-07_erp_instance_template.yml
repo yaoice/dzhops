@@ -1,0 +1,128 @@
+heat_template_version: 2015-04-30
+
+description: create instances template for cr-dev.
+
+parameters:
+  image:
+    type: string
+    description: OpenStack deploy image.
+    default: CentOS7
+    constraints:
+    - custom_constraint: glance.image
+      description: >
+        Name or ID of Image for deploy.
+
+  flavor:
+    type: string
+    description: OpenStack deploy flavor.
+    default: 1C_1G_80GB
+    constraints:
+    - custom_constraint: nova.flavor
+      description: Flavor name for template.
+
+  net:
+    type: string
+    description: OpenStack deploy network.
+    default: dev-net-214
+    constraints:
+    - custom_constraint: neutron.network
+      description: >
+        Network name for template.
+
+  volume_size:
+    type: number
+    description: Instance volume size.
+    default: 50
+
+resources:
+
+  erp1_volume_os:
+    type: OS::Cinder::Volume
+    properties:
+      name: erp1_volume_os
+      size: 40
+      image: { get_param: image }
+
+  erp1:
+    type: OS::Nova::Server
+    properties:
+      name: erp1
+      flavor: { get_param: flavor }
+      block_device_mapping_v2: [{"device_name": /dev/vda, "volume_id": { get_resource: erp1_volume_os }, "delete_on_termination": true }]
+      networks:
+      - network: { get_param: net }
+
+
+  erp1_volume1:
+    type: OS::Cinder::Volume
+    properties:
+      name: erp1_volume1
+      size: { get_param: volume_size }
+
+  erp1_attach_volume1:
+    type: OS::Cinder::VolumeAttachment
+    depends_on: [ erp1, erp1_volume1 ]
+    properties:
+      volume_id: { get_resource: erp1_volume1 }
+      instance_uuid: { get_resource: erp1 }
+      mountpoint:
+
+  erp1_volume2:
+    type: OS::Cinder::Volume
+    properties:
+      name: erp1_volume2
+      size: { get_param: volume_size }
+
+  erp1_attach_volume2:
+    type: OS::Cinder::VolumeAttachment
+    depends_on: [ erp1, erp1_volume2 ]
+    properties:
+      volume_id: { get_resource: erp1_volume2 }
+      instance_uuid: { get_resource: erp1 }
+      mountpoint:
+
+  erp2_volume_os:
+    type: OS::Cinder::Volume
+    properties:
+      name: erp2_volume_os
+      size: 40
+      image: { get_param: image }
+
+  erp2:
+    type: OS::Nova::Server
+    properties:
+      name: erp2
+      flavor: { get_param: flavor }
+      block_device_mapping_v2: [{"device_name": /dev/vda, "volume_id": { get_resource: erp2_volume_os }, "delete_on_termination": true }]
+      networks:
+      - network: { get_param: net }
+
+
+  erp2_volume1:
+    type: OS::Cinder::Volume
+    properties:
+      name: erp2_volume1
+      size: { get_param: volume_size }
+
+  erp2_attach_volume1:
+    type: OS::Cinder::VolumeAttachment
+    depends_on: [ erp2, erp2_volume1 ]
+    properties:
+      volume_id: { get_resource: erp2_volume1 }
+      instance_uuid: { get_resource: erp2 }
+      mountpoint:
+
+  erp2_volume2:
+    type: OS::Cinder::Volume
+    properties:
+      name: erp2_volume2
+      size: { get_param: volume_size }
+
+  erp2_attach_volume2:
+    type: OS::Cinder::VolumeAttachment
+    depends_on: [ erp2, erp2_volume2 ]
+    properties:
+      volume_id: { get_resource: erp2_volume2 }
+      instance_uuid: { get_resource: erp2 }
+      mountpoint:
+

@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import os
+import sys
+import xlrd
+import time
+import yaml
+
 from mako import exceptions
 from mako.lookup import TemplateLookup
 from multiprocessing import Pool
 from shade import exc
 from shade import openstack_cloud
-import os
-import sys
-import time
-import xlrd
-import yaml
 
 
 class OpenStackAPI(object):

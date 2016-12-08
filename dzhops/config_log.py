@@ -1,7 +1,13 @@
 # -*- utf-8 -*-
 
+import os
 import django.utils.log
 import logging.handlers
+
+log_dir = '/var/log/opsmaster'
+
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
 
 LOGGING = {
     'version': 1,
@@ -21,7 +27,7 @@ LOGGING = {
         'default': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/opsmaster/all.log',
+            'filename': os.path.join(log_dir, 'all.log'),
             'maxBytes': 1024*1024*5,
             'backupCount': 5,
             'formatter': 'standard',
@@ -29,7 +35,7 @@ LOGGING = {
         'error': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/opsmaster/error.log',
+            'filename': os.path.join(log_dir, 'error.log'),
             'maxBytes': 1024*1024*5,
             'backupCount': 5,
             'formatter': 'standard',
@@ -42,7 +48,7 @@ LOGGING = {
         'request_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/opsmaster/script.log',
+            'filename': os.path.join(log_dir, 'script.log'),
             'maxBytes': 1024*1024*5,
             'backupCount': 5,
             'formatter': 'standard',
@@ -50,7 +56,7 @@ LOGGING = {
         'scprits_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/opsmaster/script.log',
+            'filename': os.path.join(log_dir, 'script.log'),
             'maxBytes': 1024*1024*5,
             'backupCount': 5,
             'formatter': 'standard',
