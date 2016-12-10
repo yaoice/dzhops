@@ -2,6 +2,7 @@
 
 from multiprocessing import Pool
 from shade import openstack_cloud
+import os
 import sys
 import yaml
 
@@ -180,7 +181,9 @@ def paralley_rebuild_and_manage_volume(server_name,
 
 
 if __name__ == '__main__':
-    config_data = OpenStackAPI.load_config('clouds.yml')
+    cloud_config_file = os.path.join(os.path.dirname(__file__),
+                                     'clouds.yml')
+    config_data = OpenStackAPI.load_config(cloud_config_file)
     if not config_data:
         print "No config data has been loaded"
         sys.exit(1)

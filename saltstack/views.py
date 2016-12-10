@@ -166,8 +166,11 @@ def openstackEnvAdd(request):
                     'add_minions_hosts': network_dict,
                     }
 
+    cache_moduels_dir = '/tmp/mako_add_modules'
+    if not os.path.exists(cache_moduels_dir):
+        os.makedirs(cache_moduels_dir)
     env = TemplateLookup(directories=[template_dir],
-                         module_directory='/tmp/mako_modules2',
+                         module_directory=cache_moduels_dir,
                          output_encoding='utf-8',
                          encoding_errors='replace')
     tpl_list = os.listdir(template_dir)
@@ -328,8 +331,11 @@ def openstackEnvCreate(request):
             exit("Unknown option specified to 'dryrun' argument, Usage: dryrun=<True|False>.")
 
     def genSaltConfigFile():
+        cache_moduels_dir = '/tmp/mako_modules'
+        if not os.path.exists(cache_moduels_dir):
+            os.makedirs(cache_moduels_dir)
         env = TemplateLookup(directories=[template_dir],
-                             module_directory='/tmp/mako_modules',
+                             module_directory=cache_moduels_dir,
                              output_encoding='utf-8',
                              encoding_errors='replace')
         tpl_list = os.listdir(template_dir)
@@ -409,6 +415,9 @@ def checkDeployProcess(request):
     content = ''
     process_percent = 0
     executed_modules = []
+
+    if not os.path.exists('/var/www/html/openstack_deploy'):
+        os.makedirs('/var/www/html/openstack_deploy')
     executed_modules_path = '/var/www/html/openstack_deploy/salt_executed_modules'
     check_process_log_path = '/var/www/html/openstack_deploy/salt_all.log'
     with open(executed_modules_path) as f:
