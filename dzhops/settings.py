@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from oslo_utils import netutils
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -66,13 +67,14 @@ WSGI_APPLICATION = 'dzhops.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
+LOCAL_IP = netutils.get_my_ipv4()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'dzhops',
         'USER': 'dzhops',
         'PORT': 3306,
-        'HOST': '172.16.214.110',
+        'HOST': LOCAL_IP,
         'PASSWORD': 'dzhinternet',
     }
 }
@@ -107,7 +109,7 @@ TEMPLATE_DIRS = (
 
 # salt-api setting
 SALT_API = {
-    'url': 'http://172.16.214.110:8888/',
+    'url': 'http://' + LOCAL_IP + ':8888/',
     'user': 'saltapi',
     'password': '99cloud'
 }
