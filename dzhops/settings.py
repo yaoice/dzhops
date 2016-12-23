@@ -68,6 +68,15 @@ WSGI_APPLICATION = 'dzhops.wsgi.application'
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 LOCAL_IP = netutils.get_my_ipv4()
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': LOCAL_IP + ':11211',
+
+    }
+}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -76,6 +85,7 @@ DATABASES = {
         'PORT': 3306,
         'HOST': LOCAL_IP,
         'PASSWORD': 'dzhinternet',
+        'default-character-set': 'utf8'
     }
 }
 

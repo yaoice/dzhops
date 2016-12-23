@@ -16,6 +16,9 @@ rebuild:
         nums: 3
         size: 22
     servers:
-       - yao-test-ntp-1
-       - yao-test-ntp-2
-       - yao-test-ntp-3
+       - test_saltui_deploy-1
+       - test_saltui_deploy-2
+       - test_saltui_deploy-3
+       - test_saltui_add-1
+       - test_saltui_add-2
+       - test_saltui_add-3
