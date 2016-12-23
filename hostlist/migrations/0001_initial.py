@@ -38,7 +38,6 @@ class Migration(migrations.Migration):
             name='HostList',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('uuid', models.CharField(max_length=60, verbose_name='UUID', blank=True)),
                 ('ip', models.CharField(max_length=15, verbose_name='IP\u5730\u5740', blank=True)),
                 ('hostname', models.CharField(max_length=30, verbose_name='\u4e3b\u673a\u540d')),
                 ('minionid', models.CharField(max_length=60, verbose_name='MinionID')),
