@@ -84,7 +84,8 @@ class SaltReturns(models.Model):
     id = models.CharField(max_length=255)
     success = models.CharField(max_length=10)
     full_ret = models.TextField()
-    alter_time = models.DateTimeField()
+    #TODO: failed to set default value in alter_time field
+    alter_time = models.DateTimeField(null=True)
 
     class Meta:
         managed = True
