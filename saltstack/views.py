@@ -140,7 +140,13 @@ def openstackEnvAdd(request):
             elk_agent_minions_list = elk_agent_minions.split(',')
             all_minions = all_minions + elk_agent_minions_list
 
-        all_minions = set(all_minions)
+#        all_minions = set(all_minions)
+        sapi = SaltAPI(
+                url=settings.SALT_API['url'],
+                username=settings.SALT_API['user'],
+                password=settings.SALT_API['password']
+                )
+        all_minions = sapi.allMinionKeys()[0]
         sort_ntp_minions = list(all_minions)
         sort_ntp_minions.sort()
         ntp_minions = ','.join(sort_ntp_minions)

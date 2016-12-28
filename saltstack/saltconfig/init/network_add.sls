@@ -13,11 +13,6 @@ data_network_cidr: ${data_cidr}
 {% endload %}
 
 {% load_yaml as manage_network_hosts %}
-% if minions_hosts:
-  % for id, ip in minions_hosts.items():
-${id}: ${ip}
-  % endfor
-% endif
 __% if add_minions_hosts:
   __% for id, ip in add_minions_hosts.items():
 $__{id}: $__{ip}

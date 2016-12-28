@@ -13,7 +13,6 @@ data_network_cidr:
 {% endload %}
 
 {% load_yaml as manage_network_hosts %}
-node_172_16_200_129: 172.16.200.129
 % if add_minions_hosts:
   % for id, ip in add_minions_hosts.items():
 ${id}: ${ip}
