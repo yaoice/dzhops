@@ -73,6 +73,7 @@ __% endif
 servers: ${controllers}
 keystone_auth_admin_user: admin
 keystone_auth_admin_pass: admin
+keystone_auth_region_name: ${region}
 {% endload %}
 
 {% load_yaml as glance %}

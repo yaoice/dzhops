@@ -210,6 +210,7 @@ def openstackEnvCreate(request):
     neutron_ovs_minions = ''
 
     if request.method == 'POST':
+        region = request.POST.get('region', 'RegionOne')
         config_ha_install = request.POST.get('config_ha_install', '')
         config_storage_install = request.POST.get('config_storage_install', '')
         config_zabbix_install = request.POST.get('config_zabbix_install', '')
@@ -285,6 +286,7 @@ def openstackEnvCreate(request):
                                        controller_minions_list)))
 
         salt_config_dict = {
+                    'region': region,
                     'ntp_servers': ntp_minions,
                     'controllers': controller_minions,
                     'computes': compute_minions,

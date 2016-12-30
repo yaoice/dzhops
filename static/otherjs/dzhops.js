@@ -869,13 +869,19 @@ function addOpsConfig() {
 	        },
 	        "json"
 	     )
-		 
+
 	});
 }
 
 
 function createOpsConfig() {
 	$(document).ready(function(){
+
+		/*
+		 * region: keystone endpoint region;
+		 */
+		var region = $('input[name="region"]').val();
+
 		/*
 		 * ha变量定义:
 		 * 1、是否启用HA
@@ -1149,11 +1155,11 @@ function createOpsConfig() {
 				vxlan_start = $('input[name="vxlan_start"]').val();
 				vxlan_end = $('input[name="vxlan_end"]').val();
 		 	}
-		 
+
 		 if (osd_err == 1) {
 			 return false;
 		 }
-		 
+
 		 $("#configapi").attr("disabled","disabled");
 		 $("#configapi_rd").attr("disabled","disabled");
 	     $("#configapi").html('<img src="/static/img/button.gif" style="width:28px;height:16px;"/>');
@@ -1161,6 +1167,7 @@ function createOpsConfig() {
 	     $.post(
 	    		 "/salt/openstack/env/create/",
 	    		 {
+	    			 'region': region,
 	    			 'config_ha_install': config_ha_install,
 	    			 'config_storage_install': config_storage_install,
 	    			 'config_zabbix_install': config_zabbix_install,
