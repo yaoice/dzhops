@@ -1,6 +1,7 @@
 # hosts.sls
 
 {% load_yaml as install_plugin %}
+config_network_interface: ${config_network_interface}
 config_ha_install: ${config_ha_install}
 config_lb_install: ${config_ha_install}
 config_storage_install: ${config_storage_install}

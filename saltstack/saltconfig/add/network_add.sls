@@ -1,9 +1,9 @@
 # network.sls
 
 {% load_yaml as network_interface %}
-manage_network_interface: 
-storage_network_interface: 
-data_network_interface: 
+manage_network_interface: eth0
+storage_network_interface: eth0
+data_network_interface: eth0
 public_network_interface: 
 {% endload %}
 

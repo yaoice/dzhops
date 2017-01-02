@@ -927,6 +927,8 @@ function createOpsConfig() {
 		/*
 		 * 网络变量定义
 		 */
+		var config_network_interface = "false";
+		var enable_auto_ip = $('input[name="enable_auto_ip"]');
 		var neutron_mode = $("input[name='neutron_mode']:checked").val();
 		var vlan_start = "";
 		var vlan_end = "";
@@ -975,6 +977,17 @@ function createOpsConfig() {
 		}
 		
 		console.log(neutron_mode);
+		
+		/*
+		 * 自动配置网络ip
+		 */
+		if ($(enable_auto_ip).is(":checked")) {
+			config_network_interface = 'true';
+		}
+		else {
+			config_network_interface = 'false';
+		}
+		console.log("auto network ip is %s", config_network_interface);
 		
 		/*
 		 * 对是否启用监控、elk的条件判断
@@ -1168,6 +1181,7 @@ function createOpsConfig() {
 	    		 "/salt/openstack/env/create/",
 	    		 {
 	    			 'region': region,
+	    			 'config_network_interface': config_network_interface,
 	    			 'config_ha_install': config_ha_install,
 	    			 'config_storage_install': config_storage_install,
 	    			 'config_zabbix_install': config_zabbix_install,

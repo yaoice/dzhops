@@ -211,6 +211,8 @@ def openstackEnvCreate(request):
 
     if request.method == 'POST':
         region = request.POST.get('region', 'RegionOne')
+        config_network_interface = \
+            request.POST.get('config_network_interface', '')
         config_ha_install = request.POST.get('config_ha_install', '')
         config_storage_install = request.POST.get('config_storage_install', '')
         config_zabbix_install = request.POST.get('config_zabbix_install', '')
@@ -296,6 +298,7 @@ def openstackEnvCreate(request):
                     'elk_servers': elk_server_minions,
                     'elk_agents': elk_agent_minions,
                     'neutron_ovs_minions': neutron_ovs_minions,
+                    'config_network_interface': config_network_interface,
                     'config_ha_install': config_ha_install,
                     'config_storage_install': config_storage_install,
                     'config_zabbix_install': config_zabbix_install,
