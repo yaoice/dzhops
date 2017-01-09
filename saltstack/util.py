@@ -455,3 +455,17 @@ def isThisRunning(process_dir, process_name):
             if(retcode is not None):
                 break
 """
+
+
+def sendEmail(text_content):
+    from django.core.mail import EmailMultiAlternatives
+
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to_email = settings.TO_EMAIL
+    subject = 'Deploy OpenStack'
+
+    msg = EmailMultiAlternatives(subject,
+                                 text_content,
+                                 from_email,
+                                 to_email)
+    msg.send()

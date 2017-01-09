@@ -10,7 +10,7 @@ from record.models import OperateRecord, ReturnRecord
 from saltstack.models import DangerCommand, DeployModules, ConfigUpdate, CommonOperate
 from saltstack.saltapi import SaltAPI
 from saltstack.util import targetToMinionID, datacenterToMinionID, findJob, mysqlReturns, outFormat, manageResult, \
-    moduleDetection, moduleLock, moduleUnlock, isThisRunning
+    moduleDetection, moduleLock, moduleUnlock, isThisRunning, sendEmail
 from saltstack.sshutil import *
 from dzhops import settings
 from fabric.api import execute
@@ -425,7 +425,9 @@ def openstackAddApi(request):
 def checkDeployProcess(request):
     content = ''
     process_percent = 0
+    error = 0
     executed_modules = []
+    from_email = settings.DEFAULT_FROM_EMAIL
 
     if not os.path.exists('/var/www/html/openstack_deploy'):
         os.makedirs('/var/www/html/openstack_deploy')
@@ -439,12 +441,19 @@ def checkDeployProcess(request):
     with open(check_process_log_path) as f:
         for line in f:
             for index, module in enumerate(executed_modules):
-                module_str = "salt " + module + " module implemented <font color=green>[success]"
-                if module_str in line:
+                success_ret = "salt " + module + " module implemented <font color=green>[success]"
+                error_ret = "salt " + module + " module implemented <font color=red>[fail]"
+                if success_ret in line:
                     process_percent = int((index+1)/float(len(executed_modules))*100)
+                    if process_percent == 100:
+                        sendEmail('OpenStack安装成功')
+                elif error_ret in line:
+                    error = 1
+                    sendEmail("OpenStack安装失败，请联系管理员.")
             line += '</br>'
             content += line
         ret_json = json.dumps({'res': 1,
+                               'error': error,
                                'content': content,
                                'process_percent': process_percent})
     return HttpResponse(ret_json, content_type='application/json')

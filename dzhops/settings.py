@@ -126,6 +126,15 @@ SALT_API = {
     'password': '99cloud'
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = False
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'openstack99cloud@163.com'
+EMAIL_HOST_PASSWORD = 'xxx'
+DEFAULT_FROM_EMAIL = 'OpenStack Deploy Robot <openstack99cloud@163.com>'
+TO_EMAIL = ['xxx@xxx.net']
+
 # log setting
 try:
     from config_log import LOGGING

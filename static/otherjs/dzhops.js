@@ -1370,7 +1370,13 @@ function checkInsPro() {
 					window.clearTimeout(chkInsPro_id);
 				}
 				else {
-					strip_bar = 'progress-bar-striped active';
+					if (ret.error == 1) {
+						strip_bar = '';
+						window.clearTimeout(chkInsPro_id);
+					}
+					else {
+						strip_bar = 'progress-bar-striped active';
+					}
 				}
 				$('#result').html('\
 					<div class="control-group">\

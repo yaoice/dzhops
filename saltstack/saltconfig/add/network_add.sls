@@ -4,7 +4,7 @@
 manage_network_interface: eth0
 storage_network_interface: eth0
 data_network_interface: eth0
-public_network_interface: 
+public_network_interface: eth0
 {% endload %}
 
 {% load_yaml as network_cidr %}
