@@ -146,11 +146,13 @@
                         					<input name="ceph_osd_minions" type="checkbox" value="{{ minion }}" data-toggle="collapse" data-target="#{{minion}}">
                         					{{ minion }}
                         				</label>
-                        				<label id="{{minion}}" class="collapse col-sm-10 checkbox inline">
+                        				<label id="{{minion}}" class="collapse col-sm-10 checkbox">
                         				{% for osd_minion, osd_dev in osd_devices.iteritems %}
                         					{% if minion == osd_minion %}
                         						{% for dev in osd_dev %}
-                        						<span style="margin-left: 30px"><input name="{{ osd_minion }}_osds" type="checkbox" value="{{ dev }}">{{ dev }}</span>
+                        						<span class="checkbox" style="margin-left: 30px"><input style="margin-top: 7px;" name="{{ osd_minion }}_osds" type="checkbox" value="{{ dev }}">{{ dev }}
+                        						&nbsp;&nbsp;&nbsp;journal日志分区:&nbsp; <input name="{{ osd_minion }}_journal_{{ dev }}" type="text" style="width:15%;"/>
+                        						</span>
                         						{% endfor %}
                         					{% endif %}
                         				{% endfor %}

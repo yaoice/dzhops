@@ -142,7 +142,7 @@ EOF
 @parallel(pool_size=30)
 @roles('minion')
 def config_salt_minion():
-    sudo('yum install -y salt-minion python2-oslo-utils')
+    sudo('yum install -y salt-minion python2-oslo-utils python-psutil')
     sudo('rm -f /etc/salt/minion_id')
 
     salt_minion_conf = '''
