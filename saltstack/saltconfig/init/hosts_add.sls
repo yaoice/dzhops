@@ -62,9 +62,9 @@ osd:
 __% if add_ceph_osd_devs_dict:
 __% for minion_id, devs in add_ceph_osd_devs_dict.items():
   $__{minion_id}:
-  __% for dev in devs:
+  __% for dev, journal in devs.items():
       $__{dev}:
-         journal:
+         journal: $__{journal}
   __% endfor
 __% endfor
 __% endif

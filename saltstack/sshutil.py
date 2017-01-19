@@ -15,6 +15,7 @@ from fabric.api import execute
 from fabric.api import settings
 from fabric.colors import red, green
 from fabric.network import disconnect_all
+from hostlist.models import HostList
 
 from oslo_utils import netutils
 from dzhops import settings as dj_settings
@@ -162,14 +163,21 @@ EOF
                )
     ceph_osd_module_path = os.path.join(dj_settings.BASE_DIR,
                                         'saltstack/extmodules/ceph_osd.py')
+    get_ipv4_module_path = os.path.join(dj_settings.BASE_DIR,
+                                        'saltstack/extmodules/ip.py')
 
     put(ceph_osd_module_path,
         "/usr/lib/python2.7/site-packages/salt/modules/ceph_osd.py",
         mode=0644, use_sudo=True)
+    put(get_ipv4_module_path,
+        "/usr/lib/python2.7/site-packages/salt/modules/ip.py",
+        mode=0644, use_sudo=True)
 
     sudo('cat > /etc/salt/minion << EOF {}'.format(salt_minion_conf))
-    minion_id = sudo("python -c 'from oslo_utils import netutils; print netutils.get_my_ipv4()'")
-    sudo('hostnamectl set-hostname {}'.format('node_' + minion_id.replace('.', '_')))
+    minion_ip = sudo("python -c 'from oslo_utils import netutils; print netutils.get_my_ipv4()'")
+    host = HostList.objects.get(ip=minion_ip)
+    minion_id = host.hostname or ('node_' + minion_ip.replace('.', '_'))
+    sudo('hostnamectl set-hostname {}'.format(minion_id))
     sudo('systemctl restart salt-minion')
     sudo('systemctl enable salt-minion')
 

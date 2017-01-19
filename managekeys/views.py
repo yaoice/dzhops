@@ -48,8 +48,11 @@ def manageMinionKeys(request):
         engi_dict[eg.username] = eg.engineer
 
     for id in minions:
-        id_list = id.split('_')
-        ip = '.'.join(id_list[1:])
+        ip = sapi.masterToMinionContent(tgt=id,
+                                        fun='ip.get_ipv4',
+                                        arg=None).get(id) or '127.0.0.1'
+        if ip == '127.0.0.1':
+            log.error("ManageKeys: {0} does not get local ipv4".format(id))
         ip_list.append(ip)
         serv_dict[ip] = id
     ip_list.sort()

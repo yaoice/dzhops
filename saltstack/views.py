@@ -26,14 +26,18 @@ import logging, json, time, copy, os, subprocess
 log = logging.getLogger('opsmaster')
 
 
-@login_required
-def openstackDeployProgram(request):
-
+def getSaltApi():
     sapi = SaltAPI(
         url=settings.SALT_API['url'],
         username=settings.SALT_API['user'],
         password=settings.SALT_API['password']
     )
+    return sapi
+
+@login_required
+def openstackDeployProgram(request):
+
+    sapi = getSaltApi()
     minions_list = sapi.allMinionKeys()[0]
     # 获取ceph osd dev盘符
     osd_devices = sapi.masterToMinionContent(tgt='*',
@@ -59,28 +63,25 @@ def get_role_minions(minions=None, role_dict=None):
 
 @login_required
 def openstackAddProgram(request):
-    sapi = SaltAPI(
-        url=settings.SALT_API['url'],
-        username=settings.SALT_API['user'],
-        password=settings.SALT_API['password']
-    )
+    sapi = getSaltApi()
     minions_list = sapi.allMinionKeys()[0]
 
-    role_dict = sapi.masterToMinionContent(tgt='*',
-                                           fun='grains.get',
-                                           arg='role')
-
-    compute_minions_list = get_role_minions(minions_list,
-                                            role_dict)
-
-    ceph_osd_minions_list = get_role_minions(minions_list,
-                                             role_dict)
-
-    zabbix_agent_minions_list = get_role_minions(minions_list,
-                                                 role_dict)
-
-    elk_agent_minions_list = get_role_minions(minions_list,
-                                              role_dict)
+# note: it doesn't use role to classify now
+#     role_dict = sapi.masterToMinionContent(tgt='*',
+#                                            fun='grains.get',
+#                                            arg='role')
+#
+#     compute_minions_list = get_role_minions(minions_list,
+#                                             role_dict)
+#
+#     ceph_osd_minions_list = get_role_minions(minions_list,
+#                                              role_dict)
+#
+#     zabbix_agent_minions_list = get_role_minions(minions_list,
+#                                                  role_dict)
+#
+#     elk_agent_minions_list = get_role_minions(minions_list,
+#                                               role_dict)
 
     # 获取ceph osd dev盘符
     osd_devices = sapi.masterToMinionContent(tgt='*',
@@ -107,6 +108,7 @@ def openstackEnvAdd(request):
     network_dict = {}
     ceph_osd_devs_dict = {}
     neutron_ovs_minions = ''
+    ret_code = 0
 
     if request.method == 'POST':
         config_storage_install = request.POST.get('config_storage_install', '')
@@ -122,8 +124,7 @@ def openstackEnvAdd(request):
         ceph_osd_devs = json.loads(ceph_osd_devs_json) if ceph_osd_devs_json \
             else {}
 
-        for minion_id, dev in ceph_osd_devs.items():
-            ceph_osd_devs_dict[minion_id] = dev.split(',')
+        ceph_osd_devs_dict = ceph_osd_devs
 
         compute_minions_list = compute_minions.split(',')
         if config_storage_install == 'true':
@@ -141,18 +142,20 @@ def openstackEnvAdd(request):
             all_minions = all_minions + elk_agent_minions_list
 
 #        all_minions = set(all_minions)
-        sapi = SaltAPI(
-                url=settings.SALT_API['url'],
-                username=settings.SALT_API['user'],
-                password=settings.SALT_API['password']
-                )
+        sapi = getSaltApi()
         all_minions = sapi.allMinionKeys()[0]
         sort_ntp_minions = list(all_minions)
         sort_ntp_minions.sort()
         ntp_minions = ','.join(sort_ntp_minions)
+
         for id in all_minions:
-            id_list = id.split('_')
-            ip = '.'.join(id_list[1:])
+            ip = sapi.masterToMinionContent(tgt=id,
+                                            fun='ip.get_ipv4',
+                                            arg=None).get(id)
+            if ip == '127.0.0.1':
+                ret_code = 1
+                log.error("openstackEnvAdd: {0} does not "
+                          "get local ipv4".format(id))
             network_dict[id] = ip
 
         neutron_ovs_minions = ','.join(list(set(compute_minions_list)))
@@ -186,7 +189,8 @@ def openstackEnvAdd(request):
             output = tpl.render(**salt_config_dict)
         except:
             log.error(exceptions.text_error_template().render())
-            ret_json = json.dumps({'ret_code': 1})
+            ret_code = 1
+            ret_json = json.dumps({'ret_code': ret_code})
             return HttpResponse(ret_json, content_type='application/json')
         if 'hosts_add' in t:
             with open(output_dir + 'hosts.sls', 'w') as out:
@@ -195,7 +199,7 @@ def openstackEnvAdd(request):
             with open(output_dir + 'network.sls', 'w') as out:
                 out.write(output)
 
-    ret_json = json.dumps({'ret_code': 0})
+    ret_json = json.dumps({'ret_code': ret_code})
     return HttpResponse(ret_json, content_type='application/json')
 
 
@@ -208,6 +212,7 @@ def openstackEnvCreate(request):
     network_dict = {}
     ceph_osd_devs_dict = {}
     neutron_ovs_minions = ''
+    ret_code = 0
 
     if request.method == 'POST':
         region = request.POST.get('region', 'RegionOne')
@@ -246,8 +251,7 @@ def openstackEnvCreate(request):
         storage_cidr = request.POST.get('storage_cidr', '')
         data_cidr = request.POST.get('data_cidr', '')
 
-        for minion_id, dev in ceph_osd_devs.items():
-            ceph_osd_devs_dict[minion_id] = dev.split(',')
+        ceph_osd_devs_dict = ceph_osd_devs
 
         compute_minions_list = compute_minions.split(',')
         controller_minions_list = controller_minions.split(',')
@@ -279,9 +283,16 @@ def openstackEnvCreate(request):
         sort_ntp_minions = list(all_minions)
         sort_ntp_minions.sort()
         ntp_minions = ','.join(sort_ntp_minions)
+
+        sapi = getSaltApi()
         for id in all_minions:
-            id_list = id.split('_')
-            ip = '.'.join(id_list[1:])
+            ip = sapi.masterToMinionContent(tgt=id,
+                                            fun='ip.get_ipv4',
+                                            arg=None).get(id)
+            if ip == '127.0.0.1':
+                ret_code = 1
+                log.error("openstackEnvCreate: {0} does not "
+                          "get local ipv4".format(id))
             network_dict[id] = ip
 
         neutron_ovs_minions = ','.join(list(set(compute_minions_list +
@@ -357,7 +368,8 @@ def openstackEnvCreate(request):
                 output = tpl.render(**salt_config_dict)
             except:
                 log.error(exceptions.text_error_template().render())
-                ret_json = json.dumps({'ret_code': 1})
+                ret_code = 1
+                ret_json = json.dumps({'ret_code': ret_code})
                 return HttpResponse(ret_json, content_type='application/json')
             if 'add' in t:
                 add_template_path = os.path.join(extend_os_output_dir, t)
@@ -371,9 +383,10 @@ def openstackEnvCreate(request):
         genSaltConfigFile()
     except:
         log.error("generate salt config files error")
-        ret_json = json.dumps({'ret_code': 1})
+        ret_code = 1
+        ret_json = json.dumps({'ret_code': ret_code})
         return HttpResponse(ret_json, content_type='application/json')
-    ret_json = json.dumps({'ret_code': 0})
+    ret_json = json.dumps({'ret_code': ret_code})
     return HttpResponse(ret_json, content_type='application/json')
 
 
@@ -427,7 +440,7 @@ def checkDeployProcess(request):
     process_percent = 0
     error = 0
     executed_modules = []
-    from_email = settings.DEFAULT_FROM_EMAIL
+    enable_sendEmail = settings.enable_sendEmail
 
     if not os.path.exists('/var/www/html/openstack_deploy'):
         os.makedirs('/var/www/html/openstack_deploy')
@@ -437,7 +450,7 @@ def checkDeployProcess(request):
         executed_modules = f.readline().split('\n')[0].split(',')
 
     log.debug("check install process")
-#    print executed_modules
+
     with open(check_process_log_path) as f:
         for line in f:
             for index, module in enumerate(executed_modules):
@@ -445,11 +458,20 @@ def checkDeployProcess(request):
                 error_ret = "salt " + module + " module implemented <font color=red>[fail]"
                 if success_ret in line:
                     process_percent = int((index+1)/float(len(executed_modules))*100)
-                    if process_percent == 100:
-                        sendEmail('OpenStack安装成功')
+                    if process_percent == 100 and enable_sendEmail:
+                        try:
+                            sendEmail('OpenStack安装或扩容成功')
+                        except Exception:
+                            log.error("OpenStack deploy successed, "
+                                      "send email failed")
                 elif error_ret in line:
                     error = 1
-                    sendEmail("OpenStack安装失败，请联系管理员.")
+                    if enable_sendEmail:
+                        try:
+                            sendEmail("OpenStack安装或扩容失败，请联系管理员.")
+                        except Exception:
+                            log.error("OpenStack deploy failed, "
+                                      "send email failed")
             line += '</br>'
             content += line
         ret_json = json.dumps({'res': 1,
@@ -721,10 +743,7 @@ def deployProgramApi(request):
             # log.debug('The all target minion id set: {0}'.format(str(all_minion_id_set)))
 
             if all_minion_id_set:
-                sapi = SaltAPI(
-                    url=settings.SALT_API['url'],
-                    username=settings.SALT_API['user'],
-                    password=settings.SALT_API['password'])
+                sapi = getSaltApi()
 
                 module_lock = moduleLock(salt_module, user)
 
@@ -882,10 +901,7 @@ def remoteExecuteApi(request):
             log.debug('The all target minion id set: {0}'.format(str(all_minion_id_set)))
 
             if all_minion_id_set:
-                sapi = SaltAPI(
-                    url=settings.SALT_API['url'],
-                    username=settings.SALT_API['user'],
-                    password=settings.SALT_API['password'])
+                sapi = getSaltApi()
 
                 module_lock = moduleLock('cmd.run', user)
 

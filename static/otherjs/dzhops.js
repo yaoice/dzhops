@@ -776,49 +776,46 @@ function addOpsConfig() {
 		 
 		 jQuery.each(elk_agent_minions_list, function(i, v){
 			 if (i != elk_agent_minions_list.length-1) {
-				 elk_agent_minions += $(v).val() + ','; 
+				 elk_agent_minions += $(v).val() + ',';
 			 }
 			 else {
 				 elk_agent_minions += $(v).val();
 			 }
 		 });
-		 
+
 		 var osd_err = 0;
 		 jQuery.each(ceph_osd_minions_list, function(i, v){
-				
-				var ceph_osd_minion = $(v).val();
-				var osd_devs = "";
-				
-				var ceph_osd_devs_list = $('input[name=' + ceph_osd_minion + '_osds]:checked');
-				if (ceph_osd_devs_list.length == 0) {
-					alert("未对osd节点" + ceph_osd_minion + "分配任何osd磁盘设备");
-					osd_err = 1;
-					return false;
-				}
-				
-				jQuery.each(ceph_osd_devs_list, function(i, v){
-					 if (i != ceph_osd_devs_list.length-1) {
-						 osd_devs += $(v).val() + ','; 
-					 }
-					 else {
-						 osd_devs += $(v).val();
-					 }
-				 });
-				
-				ceph_osd_devs[ceph_osd_minion + ""] = osd_devs;
-				
-				 if (i != ceph_osd_minions_list.length-1) {
-					 storage_osd_minions += $(v).val() + ','; 
-				 }
-				 else {
-					 storage_osd_minions += $(v).val();
-				 }
-			 });
-		 
+     
+                    var ceph_osd_minion = $(v).val();
+                    var osd_devs = {};
+
+                    var ceph_osd_devs_list = $('input[name=' + ceph_osd_minion + '_osds]:checked');
+                    if (ceph_osd_devs_list.length == 0) {
+                        alert("未对osd节点" + ceph_osd_minion + "分配任何osd磁盘设备");
+                        osd_err = 1;
+                        return false;
+                    }
+
+                    jQuery.each(ceph_osd_devs_list, function(i, v){
+                         var journal_dev = $('input[name=' + ceph_osd_minion + '_journal_' + $(v).val().split('/')[2] + ']').val();
+                         console.info(journal_dev)
+                         osd_devs[$(v).val()] = journal_dev;
+                     });
+                    console.info(osd_devs);
+                    ceph_osd_devs[ceph_osd_minion + ""] = osd_devs;
+
+                     if (i != ceph_osd_minions_list.length-1) {
+                         storage_osd_minions += $(v).val() + ','; 
+                     }
+                     else {
+                         storage_osd_minions += $(v).val();
+                     }
+                 });
+
 		 if (osd_err == 1) {
 			 return false;
 		 }
-		 
+
 		 $("#configapi").attr("disabled","disabled");
 		 $("#configapi_rd").attr("disabled","disabled");
 	     $("#configapi").html('<img src="/static/img/button.gif" style="width:28px;height:16px;"/>');
@@ -1028,44 +1025,41 @@ function createOpsConfig() {
 				 */
 				jQuery.each(ceph_mon_minions_list, function(i, v){
 					 if (i != ceph_mon_minions_list.length-1) {
-						 storage_mon_minions += $(v).val() + ','; 
+						 storage_mon_minions += $(v).val() + ',';
 					 }
 					 else {
 						 storage_mon_minions += $(v).val();
 					 }
 				 });
-				
+
 				jQuery.each(ceph_osd_minions_list, function(i, v){
 						
 					var ceph_osd_minion = $(v).val();
-					var osd_devs = "";
-					
+					var osd_devs = {};
+
 					var ceph_osd_devs_list = $('input[name=' + ceph_osd_minion + '_osds]:checked');
 					if (ceph_osd_devs_list.length == 0) {
 						alert("未对osd节点" + ceph_osd_minion + "分配任何osd磁盘设备");
 						osd_err = 1;
 						return false;
 					}
-					
+
 					jQuery.each(ceph_osd_devs_list, function(i, v){
-						 if (i != ceph_osd_devs_list.length-1) {
-							 osd_devs += $(v).val() + ','; 
-						 }
-						 else {
-							 osd_devs += $(v).val();
-						 }
+						 var journal_dev = $('input[name=' + ceph_osd_minion + '_journal_' + $(v).val().split('/')[2] + ']').val();
+						 console.info(journal_dev)
+						 osd_devs[$(v).val()] = journal_dev;
 					 });
-					
+					console.info(osd_devs);
 					ceph_osd_devs[ceph_osd_minion + ""] = osd_devs;
-					
+
 					 if (i != ceph_osd_minions_list.length-1) {
-						 storage_osd_minions += $(v).val() + ','; 
+						 storage_osd_minions += $(v).val() + ',';
 					 }
 					 else {
 						 storage_osd_minions += $(v).val();
 					 }
 				 });
-				
+
 			}
 		}
 		else {

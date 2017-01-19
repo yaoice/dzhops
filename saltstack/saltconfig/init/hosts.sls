@@ -61,9 +61,9 @@ monitors: ${storage_mon_minions}
 osd:
 % for minion_id, devs in ceph_osd_devs_dict.items():
   ${minion_id}:
-  % for dev in devs:
+  % for dev, journal in devs.items():
       ${dev}:
-         journal:
+         journal: ${journal}
   % endfor
 % endfor
 {% endload %}

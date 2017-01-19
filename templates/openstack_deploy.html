@@ -136,7 +136,7 @@
                         		{% endif %}
                         	</div>
                      </div>
-                     
+ 
                      <div id="storage_ceph_osd" class="form-group" style="display: ''">
                         	<label class="col-sm-2 control-label">ceph osd节点</label>
                         	<div class="col-sm-10">
@@ -150,8 +150,9 @@
                         				{% for osd_minion, osd_dev in osd_devices.iteritems %}
                         					{% if minion == osd_minion %}
                         						{% for dev in osd_dev %}
+                        						{% load split_filter %}
                         						<span class="checkbox" style="margin-left: 30px"><input style="margin-top: 7px;" name="{{ osd_minion }}_osds" type="checkbox" value="{{ dev }}">{{ dev }}
-                        						&nbsp;&nbsp;&nbsp;journal日志分区:&nbsp; <input name="{{ osd_minion }}_journal_{{ dev }}" type="text" style="width:15%;"/>
+                        						&nbsp;&nbsp;&nbsp;journal日志分区:&nbsp; <input name="{{ osd_minion }}_journal_{{ dev|split:'deli=/&site=2' }}" type="text" style="width:15%;"/>
                         						</span>
                         						{% endfor %}
                         					{% endif %}
@@ -161,7 +162,7 @@
                         		{% endif %}
                         	</div>
                      </div>
-                     
+ 
                      <div id="storage_glusterfs" class="form-group" style="display: none">
                         	<label class="col-sm-2 control-label">glusterfs brick节点</label>
                         	<div class="col-sm-10">
