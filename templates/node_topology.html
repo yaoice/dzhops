@@ -25,7 +25,7 @@
                         {% if serv_list %}
                             {% for serv in serv_list %}
                             <tr id="{{ serv.0 }}">
-                            	<td class="text-center">{{ serv.0 }}</td>
+                                <td class="text-center">{{ serv.0 }}</td>
                                         <td class="text-center">{{ serv.1.ip }}</td>
                                         <td class="text-center">{{ serv.1.role }}</td>
                             </tr>
@@ -47,20 +47,20 @@
         var roles_len = role_list.length;
         
         for (var i = 0; i < roles_len; i++) {
-        	nodes.push({ name: role_list[i]});
+            nodes.push({ name: role_list[i]});
         };
         
         for(node in serv_dict) {
-        	nodes.push({ name: node});
+            nodes.push({ name: node});
         }
         
         for(var i = 0; i < roles_len; i++) {
-        	for(var j = roles_len; j < nodes.length; j++) {
-        		  var name = nodes[j].name
-        		  if (serv_dict[name].role.indexOf(role_list[i]) >= 0) {
-        			  edges.push({ source: i, target: j});
-        		  }        		
-        	}
+            for(var j = roles_len; j < nodes.length; j++) {
+                  var name = nodes[j].name
+                  if (serv_dict[name].role.indexOf(role_list[i]) >= 0) {
+                      edges.push({ source: i, target: j});
+                  }                
+            }
         }
         
  /*        var nodes = [ { name: "桂林"    }, { name: "广州" },

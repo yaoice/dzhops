@@ -1,7 +1,7 @@
 # hosts.sls
 
 {% load_yaml as install_plugin %}
-config_network_interface: true
+config_network_interface: false
 config_ha_install: true
 config_lb_install: true
 config_storage_install: ${config_storage_install}
@@ -31,7 +31,7 @@ vip: 172.16.214.7/32
 vip_hostname: openstack_vip
 vip_network_interface: eth0
 vip_set_method: keepalived
-keepalived_virtual_router_id: 58
+keepalived_virtual_router_id: 68
 {% endload %}
 
 {% load_yaml as lb %}
@@ -109,7 +109,7 @@ neutron_provider_networks:
   network_flat_networks: "external"
   network_mappings: "external:br-ex"
   network_types: "vxlan,flat"
-  network_vxlan_ranges: "1:111"
+  network_vxlan_ranges: "1:1111"
 {% endload %}
 
 {% load_yaml as neutron_agent %}

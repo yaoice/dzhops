@@ -12,8 +12,8 @@
 {% block content %}
     <h5 class="page-header">
         <ol class="breadcrumb">
-        	<li><a href="{% url 'index_minion' %}">添加minion节点</a></li>
-        	<li class="active">OpenStack部署</li>
+            <li><a href="{% url 'index_minion' %}">添加minion节点</a></li>
+            <li class="active">OpenStack部署</li>
             <li><a href="{% url 'openstack_add' %}">OpenStack扩容</a></li>
             <li><a href="{% url 'deploy' %}">模块部署</a></li>
             <li><a href="{% url 'update' %}">配置更新</a></li>
@@ -21,244 +21,243 @@
             <li><a href="{% url 'execute' %}">远程操作</a></li>
         </ol>
     </h5>
- <div class="container-fluid" style="width:90%;">
-		<div data-wizard-init>
-		  <ul class="steps">
-			<li data-step="1">控制</li>
-			<li data-step="2">计算</li>
-			<li data-step="3">存储</li>
-			<li data-step="4">网络</li>
-			<li data-step="5">监控</li>
-			<li data-step="6">ELK</li>
-		  </ul>
-		  
-		  <div class="steps-content">
-		  
-			<div data-step="1">
-			  <div class="form-group">
-			  	<label class="col-sm-2 control-label">启用HA</label>
-			  	<input name='enable_ha' type="checkbox" class="ha_check" data-toggle="collapse" data-target="#k_vip_collapse">
-			  </div>
-			  
-			  <div id="haForm">
-			  <div id="k_vip_collapse" class="collapse">
-			  	<div class="form-group">
-					<label class="col-sm-2 control-label">虚拟VIP</label>
-					<input name='keepalived_vip' type="text">
-			  	</div>
+<div class="container-fluid" style="width:90%;">
+        <div data-wizard-init>
+        <ul class="steps">
+            <li data-step="1">控制</li>
+            <li data-step="2">计算</li>
+            <li data-step="3">存储</li>
+            <li data-step="4">网络</li>
+            <li data-step="5">监控</li>
+            <li data-step="6">ELK</li>
+         </ul>
+ 
+         <div class="steps-content"> 
+             <div data-step="1">
+                 <div class="form-group">
+                     <label class="col-sm-2 control-label">启用HA</label>
+                     <input name='enable_ha' type="checkbox" class="ha_check" data-toggle="collapse" data-target="#k_vip_collapse">
+                 </div>
+ 
+             <div id="haForm">
+              <div id="k_vip_collapse" class="collapse">
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label">虚拟VIP</label>
+                    <input name='keepalived_vip' type="text">
+                  </div>
 
-			  	<div class="form-group">
-			  		<label class="col-sm-2 control-label">VRID</label>
-					<input name='keepalived_vrid' type="number" min="1" step="1" max="255" class="form-inline" placeholder='51' style="width:7%;">
-			  	</div>
+                  <div class="form-group">
+                      <label class="col-sm-2 control-label">VRID</label>
+                    <input name='keepalived_vrid' type="number" min="1" step="1" max="255" class="form-inline" placeholder='51' style="width:7%;">
+                  </div>
 
-			  	<div class="form-group">
-			  		<label class="col-sm-2 control-label">VIP网卡</label>
-					<input name='keepalived_vip_interface' type="text" class="form-inline" placeholder='eth0' style="width:7%;">
-			  	</div>
-			  </div>
+                  <div class="form-group">
+                      <label class="col-sm-2 control-label">VIP网卡</label>
+                    <input name='keepalived_vip_interface' type="text" class="form-inline" placeholder='eth0' style="width:7%;">
+                  </div>
+              </div>
 
-			    <div class="form-group">
+                <div class="form-group">
                     <label class="col-sm-2 control-label">Region</label>
                     <input name='region' type="text" class="form-inline" value="RegionOne">
                 </div>
 
-			  	<div class="form-group">
-                 	<label class="col-sm-2 control-label">controller节点</label>
-                  	<div class="col-sm-10">
-                            	{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='controller_minions' type="checkbox" class="sev_check" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-            		</div>
-       			</div>
-        	   </div>
-        	</div>
-        	
-        	<div data-step="2">
-        		<div class="form-group">
-  					<label class="col-sm-2 control-label">虚拟化类型</label>
-  					<div class="col-sm-10">
-  					<input type="radio" name="virt_type" value="kvm" checked>&nbsp;&nbsp;kvm
-  					</div>
-  					<div class="col-sm-10">
-  						<input type="radio" name="virt_type" value="qemu">&nbsp;&nbsp;qemu
-  					</div>
-  				</div>
-        	
-        		<div class="form-group">
-        		<label class="col-sm-2 control-label">compute节点</label>
-        		<div class="col-sm-10">
-        		{% if minions_list %}
-        			{% for minion in minions_list %}
-        				<label class="col-sm-10 checkbox">
-        					<input name='compute_minions' type="checkbox" value="{{ minion }}">
-        					{{ minion }}
-        				</label>
-        			{% endfor %}
-        		{% endif %}
-        		</div>
-        		</div>
-        	</div>
-        	
-			
-			<div data-step="3">
-			  	<div class="form-group">
-			  		<label class="col-sm-2 control-label">启用分布式存储</label>
-			  		<input name='enable_distri_storage' type="checkbox" data-toggle="collapse" data-target="#storage_back">
-			  	</div>
-        		 
-        		<div id="storage_back" class="collapse">
-        			<div class="form-group">
-			  			<label class="col-sm-2 control-label">存储后端</label>
-			  			<div class="col-sm-10">
-			  				<input type="radio" class="stroage_ceph_check" name="storage" value="ceph" checked>&nbsp;&nbsp;ceph
-			  			</div>
-			  			<div class="col-sm-10">
-			  				<input type="radio" class="storage_glusterfs_check" name="storage" value="glusterfs" disabled>&nbsp;&nbsp;glusterfs
-			  			</div>
-			  		</div>
-        		
-        			<div id="storage_ceph_mon" class="form-group" style="display: ''">
-                        	<div><label class="col-sm-2 control-label">ceph mon节点</label></div>
-                        	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='ceph_mon_minions' type="checkbox" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-                        	</div>
+                  <div class="form-group">
+                     <label class="col-sm-2 control-label">controller节点</label>
+                      <div class="col-sm-10">
+                                {% if minions_list %}
+                                    {% for minion in minions_list %}
+                                        <label class="col-sm-10 checkbox">
+                                            <input name='controller_minions' type="checkbox" class="sev_check" value="{{ minion }}">
+                                            {{ minion }}
+                                        </label>
+                                    {% endfor %}
+                                {% endif %}
+                    </div>
+                   </div>
+               </div>
+            </div>
+            
+            <div data-step="2">
+                <div class="form-group">
+                      <label class="col-sm-2 control-label">虚拟化类型</label>
+                      <div class="col-sm-10">
+                      <input type="radio" name="virt_type" value="kvm" checked>&nbsp;&nbsp;kvm
+                      </div>
+                      <div class="col-sm-10">
+                          <input type="radio" name="virt_type" value="qemu">&nbsp;&nbsp;qemu
+                      </div>
+              </div>
+
+                <div class="form-group">
+                <label class="col-sm-2 control-label">compute节点</label>
+                <div class="col-sm-10">
+                {% if minions_list %}
+                    {% for minion in minions_list %}
+                        <label class="col-sm-10 checkbox">
+                            <input name='compute_minions' type="checkbox" value="{{ minion }}">
+                            {{ minion }}
+                        </label>
+                    {% endfor %}
+                {% endif %}
+                </div>
+                </div>
+                </div>
+
+
+            <div data-step="3">
+                  <div class="form-group">
+                      <label class="col-sm-2 control-label">启用分布式存储</label>
+                      <input name='enable_distri_storage' type="checkbox" data-toggle="collapse" data-target="#storage_back">
+                  </div>
+
+                <div id="storage_back" class="collapse">
+                    <div class="form-group">
+                          <label class="col-sm-2 control-label">存储后端</label>
+                          <div class="col-sm-10">
+                              <input type="radio" class="stroage_ceph_check" name="storage" value="ceph" checked>&nbsp;&nbsp;ceph
+                          </div>
+                          <div class="col-sm-10">
+                              <input type="radio" class="storage_glusterfs_check" name="storage" value="glusterfs" disabled>&nbsp;&nbsp;glusterfs
+                          </div>
+                      </div>
+                
+                    <div id="storage_ceph_mon" class="form-group" style="display: ''">
+                        <div><label class="col-sm-2 control-label">ceph mon节点</label></div>
+                            <div class="col-sm-10">
+                                {% if minions_list %}
+                                    {% for minion in minions_list %}
+                                        <label class="col-sm-10 checkbox">
+                                            <input name='ceph_mon_minions' type="checkbox" value="{{ minion }}">
+                                            {{ minion }}
+                                        </label>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
                      </div>
- 
+
                      <div id="storage_ceph_osd" class="form-group" style="display: ''">
-                        	<label class="col-sm-2 control-label">ceph osd节点</label>
-                        	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name="ceph_osd_minions" type="checkbox" value="{{ minion }}" data-toggle="collapse" data-target="#{{minion}}">
-                        					{{ minion }}
-                        				</label>
-                        				<label id="{{minion}}" class="collapse col-sm-10 checkbox">
-                        				{% for osd_minion, osd_dev in osd_devices.iteritems %}
-                        					{% if minion == osd_minion %}
-                        						{% for dev in osd_dev %}
-                        						{% load split_filter %}
-                        						<span class="checkbox" style="margin-left: 30px"><input style="margin-top: 7px;" name="{{ osd_minion }}_osds" type="checkbox" value="{{ dev }}">{{ dev }}
-                        						&nbsp;&nbsp;&nbsp;journal日志分区:&nbsp; <input name="{{ osd_minion }}_journal_{{ dev|split:'deli=/&site=2' }}" type="text" style="width:15%;"/>
-                        						</span>
-                        						{% endfor %}
-                        					{% endif %}
-                        				{% endfor %}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-                        	</div>
+                            <label class="col-sm-2 control-label">ceph osd节点</label>
+                            <div class="col-sm-10">
+                                {% if minions_list %}
+                                    {% for minion in minions_list %}
+                                        <label class="col-sm-10 checkbox">
+                                            <input name="ceph_osd_minions" type="checkbox" value="{{ minion }}" data-toggle="collapse" data-target="#{{minion}}">
+                                            {{ minion }}
+                                        </label>
+                                        <label id="{{minion}}" class="collapse col-sm-10 checkbox">
+                                        {% for osd_minion, osd_dev in osd_devices.iteritems %}
+                                            {% if minion == osd_minion %}
+                                                {% for dev in osd_dev %}
+                                                {% load split_filter %}
+                                                <span class="checkbox" style="margin-left: 30px"><input style="margin-top: 7px;" name="{{ osd_minion }}_osds" type="checkbox" value="{{ dev }}">{{ dev }}
+                                                &nbsp;&nbsp;&nbsp;journal日志分区:&nbsp; <input name="{{ osd_minion }}_journal_{{ dev|split:'deli=/&site=2' }}" type="text" style="width:15%;"/>
+                                                </span>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        </label>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
                      </div>
  
                      <div id="storage_glusterfs" class="form-group" style="display: none">
-                        	<label class="col-sm-2 control-label">glusterfs brick节点</label>
-                        	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='glusterfs_minions' type="checkbox" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-                        	</div>
+                            <label class="col-sm-2 control-label">glusterfs brick节点</label>
+                            <div class="col-sm-10">
+                                {% if minions_list %}
+                                    {% for minion in minions_list %}
+                                        <label class="col-sm-10 checkbox">
+                                            <input name='glusterfs_minions' type="checkbox" value="{{ minion }}">
+                                            {{ minion }}
+                                        </label>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
                      </div>
-        		 </div>
-			</div>
-			
-		<form id="neutronForm" class="form-horizontal">
-			<div data-step="4">
-				<div class="form-group">
-			  			<label class="col-sm-2 control-label">网络模式</label>
-			  			<div class="col-sm-10">
-			  				<input id="neutron_vlan_mode" type="radio" class="neutron_vlan" name="neutron_mode" value="vlan" checked>&nbsp;&nbsp;vlan
-			  			</div>
-			  			<div class="col-sm-10">
-			  				<input id="neutron_vxlan_mode" type="radio" class="neutron_vxlan" name="neutron_mode" value="vxlan">&nbsp;&nbsp;vxlan
-			  			</div>
-			  	</div>
-			  	
-			  	<div class="form-group">
+                 </div>
+            </div>
+            
+        <form id="neutronForm" class="form-horizontal">
+            <div data-step="4">
+                <div class="form-group">
+                          <label class="col-sm-2 control-label">网络模式</label>
+                          <div class="col-sm-10">
+                              <input id="neutron_vlan_mode" type="radio" class="neutron_vlan" name="neutron_mode" value="vlan" checked>&nbsp;&nbsp;vlan
+                          </div>
+                          <div class="col-sm-10">
+                              <input id="neutron_vxlan_mode" type="radio" class="neutron_vxlan" name="neutron_mode" value="vxlan">&nbsp;&nbsp;vxlan
+                          </div>
+                  </div>
+                  
+                  <div class="form-group">
                     <label class="control-label col-sm-2">自动配置网络ip</label>
                     <div class="col-sm-10">
                     <input name='enable_auto_ip' type="checkbox" checked style="margin-top: 10px;">
                     </div>
                 </div>
-			
-				<div id="neutron_vlan" class="form-group" style="display: ''">
-			  			<label class="col-sm-2 control-label">vlan id范围</label>
-			  			<div class="col-sm-10">
-			  				 <input name="vlan_start" type="number" min="1" step="1" max="4094" class="form-inline" placeholder='2000' style="width:7%;"> ~
-			  				 <input name="vlan_end" type="number" min="1" step="1" max="4094" class="form-inline" placeholder='2500' style="width:7%;">
-			  			</div>
-			  	</div>
-			  	
-			  	<div id="neutron_vxlan" class="form-group" style="display: none">
-			  			<label class="col-sm-2 control-label">vxlan id范围</label>
-			  			<div class="col-sm-10">
-			  				 <input name="vxlan_start" type="number" min="1" step="1" max="9999" class="form-inline" placeholder='1' style="width:7%;"> ~
-			  				 <input name="vxlan_end" type="number" min="1" step="1" max="9999" class="form-inline" placeholder='1024' style="width:7%;">
-			  			</div>
-			  	</div>
-			
-			  	<div class="form-group">
-			  			<label class="col-sm-2 control-label">管理网网卡</label>
-			  			<div class="col-sm-10">
-			  				 <input id="manage_interface" name="manage_interface" type="text" class="form-control" placeholder="eth0" style="width:60%;">
-			  			</div>
-			  	</div>
-			  	
-			  	<div class="form-group">
-			  			<label class="col-sm-2 control-label">存储网网卡</label>
-			  			<div class="col-sm-10">
-			  				 <input id="storage_interface" name="storage_interface" type="text" class="form-control" placeholder="eth0" style="width:60%;">
-			  			</div>
-			  	</div>
-			  	
-			  	<div id="storage_cidr" class="form-group" style="display: ''">
-			  			<label class="col-sm-2 control-label">存储网CIDR</label>
-			  			<div class="col-sm-10">
-			  				 <input name="storage_cidr" type="text" class="form-control" placeholder="目前只支持24位掩码，格式:[172.16.10.0/24]" style="width:60%;">
-			  			</div>
-			  	</div>
-			  	
-			  	<div class="form-group">
-			  			<label class="col-sm-2 control-label">虚拟机业务网网卡</label>
-			  			<div class="col-sm-10">
-			  				 <input id="data_interface" name="data_interface" type="text" class="form-control" placeholder="eth0" style="width:60%;">
-			  			</div>
-			  	</div>
-			  	
-			  	<div id='data_cidr' class="form-group" style="display: none">
-			  			<label class="col-sm-2 control-label">虚拟机业务网CIDR</label>
-			  			<div class="col-sm-10">
-			  				 <input name="data_cidr" type="text" class="form-control" placeholder="目前只支持24位掩码，格式:[10.10.10.0/24]" style="width:60%;">
-			  			</div>
-			  	</div>
-			  	
-			  	<div id='public_interface' class="form-group" style="display: none">
-			  			<label class="col-sm-2 control-label">虚拟机浮动ip网网卡</label>
-			  			<div class="col-sm-10">
-			  				 <input name="public_interface" type="text" class="form-control" placeholder="eth0" style="width:60%;">
-			  			</div>
-			  	</div>
-			</div>
-		</form>
-			
-			<div data-step="5">
+            
+                <div id="neutron_vlan" class="form-group" style="display: ''">
+                          <label class="col-sm-2 control-label">vlan id范围</label>
+                          <div class="col-sm-10">
+                               <input name="vlan_start" type="number" min="1" step="1" max="4094" class="form-inline" placeholder='2000' style="width:7%;"> ~
+                               <input name="vlan_end" type="number" min="1" step="1" max="4094" class="form-inline" placeholder='2500' style="width:7%;">
+                          </div>
+                  </div>
+                  
+                  <div id="neutron_vxlan" class="form-group" style="display: none">
+                          <label class="col-sm-2 control-label">vxlan id范围</label>
+                          <div class="col-sm-10">
+                               <input name="vxlan_start" type="number" min="1" step="1" max="9999" class="form-inline" placeholder='1' style="width:7%;"> ~
+                               <input name="vxlan_end" type="number" min="1" step="1" max="9999" class="form-inline" placeholder='1024' style="width:7%;">
+                          </div>
+                  </div>
+            
+                  <div class="form-group">
+                          <label class="col-sm-2 control-label">管理网网卡</label>
+                          <div class="col-sm-10">
+                               <input id="manage_interface" name="manage_interface" type="text" class="form-control" placeholder="eth0" style="width:60%;">
+                          </div>
+                  </div>
+                  
+                  <div class="form-group">
+                          <label class="col-sm-2 control-label">存储网网卡</label>
+                          <div class="col-sm-10">
+                               <input id="storage_interface" name="storage_interface" type="text" class="form-control" placeholder="eth0" style="width:60%;">
+                          </div>
+                  </div>
+                  
+                  <div id="storage_cidr" class="form-group" style="display: ''">
+                          <label class="col-sm-2 control-label">存储网CIDR</label>
+                          <div class="col-sm-10">
+                               <input name="storage_cidr" type="text" class="form-control" placeholder="目前只支持24位掩码，格式:[172.16.10.0/24]" style="width:60%;">
+                          </div>
+                  </div>
+                  
+                  <div class="form-group">
+                          <label class="col-sm-2 control-label">虚拟机业务网网卡</label>
+                          <div class="col-sm-10">
+                               <input id="data_interface" name="data_interface" type="text" class="form-control" placeholder="eth0" style="width:60%;">
+                          </div>
+                  </div>
+                  
+                  <div id='data_cidr' class="form-group" style="display: none">
+                          <label class="col-sm-2 control-label">虚拟机业务网CIDR</label>
+                          <div class="col-sm-10">
+                               <input name="data_cidr" type="text" class="form-control" placeholder="目前只支持24位掩码，格式:[10.10.10.0/24]" style="width:60%;">
+                          </div>
+                  </div>
+                  
+                  <div id='public_interface' class="form-group" style="display: none">
+                          <label class="col-sm-2 control-label">虚拟机浮动ip网网卡</label>
+                          <div class="col-sm-10">
+                               <input name="public_interface" type="text" class="form-control" placeholder="eth0" style="width:60%;">
+                          </div>
+                  </div>
+            </div>
+        </form>
+            
+            <div data-step="5">
               <div class="form-group">
                     <label class="col-sm-2 control-label">启用监控</label>
                     <input name='enable_monitor' type="checkbox" data-toggle="collapse" data-target="#enable_monitor">
@@ -294,45 +293,45 @@
                      </div>
               </div>
             </div>
-			
-			<div data-step="6">
-			  <div class="form-group">
-			  		<label class="col-sm-2 control-label">启用ELK</label>
-			  		<input name='enable_elk' type="checkbox" data-toggle="collapse" data-target="#enable_elk">
-			  </div>
-			  
-			  <div id="enable_elk" class="collapse">
-        			<div id="elk_server" class="form-group" style="display: ''">
-                        	<div><label class="col-sm-2 control-label">elk server节点</label></div>
-                        	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='elk_server_minions' type="checkbox" class="elk_server" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-                        	</div>
+            
+            <div data-step="6">
+              <div class="form-group">
+                      <label class="col-sm-2 control-label">启用ELK</label>
+                      <input name='enable_elk' type="checkbox" data-toggle="collapse" data-target="#enable_elk">
+              </div>
+              
+              <div id="enable_elk" class="collapse">
+                    <div id="elk_server" class="form-group" style="display: ''">
+                            <div><label class="col-sm-2 control-label">elk server节点</label></div>
+                            <div class="col-sm-10">
+                                {% if minions_list %}
+                                    {% for minion in minions_list %}
+                                        <label class="col-sm-10 checkbox">
+                                            <input name='elk_server_minions' type="checkbox" class="elk_server" value="{{ minion }}">
+                                            {{ minion }}
+                                        </label>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
                     </div>
-			  	
-        			<div id="elk_agent" class="form-group" style="display: ''">
-                        	<div><label class="col-sm-2 control-label">elk agent节点</label></div>
-                        	<div class="col-sm-10">
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				<label class="col-sm-10 checkbox">
-                        					<input name='elk_agent_minions' type="checkbox" value="{{ minion }}">
-                        					{{ minion }}
-                        				</label>
-                        			{% endfor %}
-                        		{% endif %}
-                        	</div>
+                  
+                    <div id="elk_agent" class="form-group" style="display: ''">
+                            <div><label class="col-sm-2 control-label">elk agent节点</label></div>
+                            <div class="col-sm-10">
+                                {% if minions_list %}
+                                    {% for minion in minions_list %}
+                                        <label class="col-sm-10 checkbox">
+                                            <input name='elk_agent_minions' type="checkbox" value="{{ minion }}">
+                                            {{ minion }}
+                                        </label>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
                      </div>
-			  	</div>
-			</div>
-		  </div>
-		</div>
+                  </div>
+            </div>
+          </div>
+        </div>
     </div>
     
     <br/>

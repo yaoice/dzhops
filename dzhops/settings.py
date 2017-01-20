@@ -132,10 +132,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = False
 EMAIL_HOST = 'smtp.163.com'
 EMAIL_PORT = 25
-EMAIL_HOST_USER = 'openstackxxcloud@163.com'
-EMAIL_HOST_PASSWORD = 'openstackxxcloud'
+EMAIL_HOST_USER = 'openstack99cloud@163.com'
+EMAIL_HOST_PASSWORD = 'openstackcloud'
 DEFAULT_FROM_EMAIL = 'OpenStack Deploy Robot <openstack99cloud@163.com>'
-TO_EMAIL = ['xxx@cloud.net']
+TO_EMAIL = ['yao.xiabing@99cloud.net']
 
 # log setting
 try:

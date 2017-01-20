@@ -61,13 +61,13 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-					{% if user.is_authenticated %}
-						<li><a href="/accounts/logout">退出</a></li>
-					{% else %} 
-						登录
-					{% endif %}
-				</a>  
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    {% if user.is_authenticated %}
+                        <li><a href="/accounts/logout">退出</a></li>
+                    {% else %} 
+                        登录
+                    {% endif %}
+                </a>  
             </li>
           </ul>
         </div>
@@ -77,30 +77,30 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-			<div class="media user-media bg-dark dker">
-				<div class="user-media-toggleHover">
-					<span class="fa fa-user"></span> 
-				</div>
-				<div class="user-wrapper bg-dark">
-					<img class="media-object img-circle user-img" width="58" height="58" alt="User Picture" src="/static/img/{{ user.username }}.jpg">
-					<div class="media-body">
-						{% if user.is_authenticated %}
-							<strong class="font-bold"><a href="/accounts/profile">{{ user.username }}</a></strong>
-						{% else %} 
-							登录
-						{% endif %}
-					</div>
-				</div>
-			</div>
-			<div>
-				<ul class="nav nav-sidebar">
-					<li><a></a></li>
-					{% block nav %}{% endblock %}
-				</ul>
-			</div>
+            <div class="media user-media bg-dark dker">
+                <div class="user-media-toggleHover">
+                    <span class="fa fa-user"></span> 
+                </div>
+                <div class="user-wrapper bg-dark">
+                    <img class="media-object img-circle user-img" width="58" height="58" alt="User Picture" src="/static/img/{{ user.username }}.jpg">
+                    <div class="media-body">
+                        {% if user.is_authenticated %}
+                            <strong class="font-bold"><a href="/accounts/profile">{{ user.username }}</a></strong>
+                        {% else %} 
+                            登录
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div>
+                <ul class="nav nav-sidebar">
+                    <li><a></a></li>
+                    {% block nav %}{% endblock %}
+                </ul>
+            </div>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-			{% block content %}{% endblock %}
+            {% block content %}{% endblock %}
         </div>
       </div>
     </div>

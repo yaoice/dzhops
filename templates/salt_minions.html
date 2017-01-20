@@ -13,7 +13,7 @@
 {% block content %}
     <h5 class="page-header">
         <ol class="breadcrumb">
-        	<li class="active">添加minion节点</li>
+            <li class="active">添加minion节点</li>
             <li><a href="{% url 'openstack_deploy' %}">OpenStack部署</a></li>
             <li><a href="{% url 'openstack_add' %}">OpenStack扩容</a></li>
             <li><a href="{% url 'deploy' %}">模块部署</a></li>
@@ -25,72 +25,72 @@
     
     <div class="row">
         <form class="form-horizontal form-border" id="addminionForm" method="post" enctype="multipart/form-data" action="{% url 'add_minion' %}">
-        	{% csrf_token %}
+            {% csrf_token %}
             <div class="col-sm-10 col-sm-offset-1">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">minion节点</label>
                             <div class="col-sm-10">
-                            	<label class="col-sm-10 checkbox inline">
+                                <label class="col-sm-10 checkbox inline">
                                 <!-- Multiple Checkboxes -->
-                        		{% if minions_list %}
-                        			{% for minion in minions_list %}
-                        				
-                        			<span style="margin-left: 30px"><input name='minions_ip' type="checkbox" value="{{ minion }}"></span>
-                        					{{ minion }}
-                        				
-                        			{% endfor %}
-                        			</br>
-                        			<span style="margin-left: 30px">
-                        			<input id="checkallminions" type="checkbox" value="checkallminions" onclick="checkAllMinions(checkallminions)">
-                        			全选
-                        			</span>
-                        		{% else %}
-                        		<input type="text" class="form-control" placeholder="未发现任何要添加的minion节点" disabled='disabled'>
-                        		{% endif %}
-                        		</label>
-                        		
+                                {% if minions_list %}
+                                    {% for minion in minions_list %}
+                                        
+                                    <span style="margin-left: 30px"><input name='minions_ip' type="checkbox" value="{{ minion }}"></span>
+                                            {{ minion }}
+                                        
+                                    {% endfor %}
+                                    </br>
+                                    <span style="margin-left: 30px">
+                                    <input id="checkallminions" type="checkbox" value="checkallminions" onclick="checkAllMinions(checkallminions)">
+                                    全选
+                                    </span>
+                                {% else %}
+                                <input type="text" class="form-control" placeholder="未发现任何要添加的minion节点" disabled='disabled'>
+                                {% endif %}
+                                </label>
+                                
                             </div>
                             
                         </div>
                          <div class='form-group'>
-                        	<label class="col-sm-2 control-label">ssh用户</label>
-                        	<div class="col-sm-10">
-                        		 <input type="text" class="form-control" name="username">
-                        	</div>
+                            <label class="col-sm-2 control-label">ssh用户</label>
+                            <div class="col-sm-10">
+                                 <input type="text" class="form-control" name="username">
+                            </div>
                         </div>
                         <div class='form-group'>
-                          	<label class="col-sm-2 control-label">ssh密码</label>
-                        	<div class="col-sm-10">
-                        		 <input type="password" class="form-control" name="password">
-                        	</div>
+                              <label class="col-sm-2 control-label">ssh密码</label>
+                            <div class="col-sm-10">
+                                 <input type="password" class="form-control" name="password">
+                            </div>
                         </div>
 <!--                        <div class='form-group'>
-                    		<label class="col-sm-2 control-label">ssh密钥</label>
-                    		<textarea style="margin-left: 15px" id="private_key" cols="80" rows="10" placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', or 'ecdsa-sha2-nistp521'"></textarea>
-                    	</div>
+                            <label class="col-sm-2 control-label">ssh密钥</label>
+                            <textarea style="margin-left: 15px" id="private_key" cols="80" rows="10" placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', or 'ecdsa-sha2-nistp521'"></textarea>
+                        </div>
 -->
-                    	
-                    	<div class='form-group'>
-                    	<label class="col-sm-2 control-label">ssh密钥</label>
-                    	<div class="col-sm-10">
-                    		<input id="ssh_key" name="input44[]" type="file" multiple class="file-loading">
-                    	</div>
-                    	<div id="errorBlock" class="help-block"></div>
-                    	</div>
-                    	
+                        
                         <div class='form-group'>
-                          	<label class="col-sm-2 control-label">yum repo url</label>
-                        	<div class="col-sm-10">
-                        		 <input type="text" class="form-control" placeholder="yum本地源地址 [格式：http://<ip>/repo_liberty]" name="yum_url">
-                        	</div>
+                        <label class="col-sm-2 control-label">ssh密钥</label>
+                        <div class="col-sm-10">
+                            <input id="ssh_key" name="input44[]" type="file" multiple class="file-loading">
+                        </div>
+                        <div id="errorBlock" class="help-block"></div>
+                        </div>
+                        
+                        <div class='form-group'>
+                              <label class="col-sm-2 control-label">yum repo url</label>
+                            <div class="col-sm-10">
+                                 <input type="text" class="form-control" placeholder="yum本地源地址 [格式：http://<ip>/repo_liberty]" name="yum_url">
+                            </div>
                         </div>
                         <div class='form-group'>
-                          	<label class="col-sm-2 control-label">pip repo url</label>
-                        	<div class="col-sm-10">
-                        		 <input type="text" class="form-control" placeholder="pip本地源地址  [格式：http://<ip>/repo_liberty/pypi/simple]" name="pip_url">
-                        	</div>
+                              <label class="col-sm-2 control-label">pip repo url</label>
+                            <div class="col-sm-10">
+                                 <input type="text" class="form-control" placeholder="pip本地源地址  [格式：http://<ip>/repo_liberty/pypi/simple]" name="pip_url">
+                            </div>
                         </div>
                     </div>
                 </div>
