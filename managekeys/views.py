@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.views.generic.list import ListView
 
 from hostlist.models import HostList, DataCenter, Dzhuser
 from saltstack.saltapi import SaltAPI
@@ -69,9 +70,64 @@ def manageMinionKeys(request):
         {
             'dc_dict': dc_dict,
             'engi_dict': engi_dict,
-            'serv_list': serv_list
+            'serv_list': serv_list,
         }
     )
+
+
+class ManageKeysView(ListView):
+    template_name = 'manage_keys.html'
+    context_object_name = 'node_list'
+
+    def get_servers(self):
+        serv_list = []
+        ip_list = []
+        serv_dict = {}
+        dc_dict = {}
+        engi_dict = {}
+
+        sapi = SaltAPI(
+            url=settings.SALT_API['url'],
+            username=settings.SALT_API['user'],
+            password=settings.SALT_API['password']
+        )
+        minions, minions_pre, minions_rej = sapi.allMinionKeys()
+        # log.debug(str(minions))
+
+        dcs = DataCenter.objects.all()
+        for dc in dcs:
+            dc_dict[dc.dcen] = dc.dccn
+        egs = Dzhuser.objects.all()
+        for eg in egs:
+            engi_dict[eg.username] = eg.engineer
+
+        for id in minions:
+            ip = sapi.masterToMinionContent(tgt=id,
+                                            fun='ip.get_ipv4',
+                                            arg=None).get(id) or '127.0.0.1'
+            if ip == '127.0.0.1':
+                log.error("ManageKeys: {0} does not get local ipv4".format(id))
+            ip_list.append(ip)
+            serv_dict[ip] = id
+        ip_list.sort()
+
+        for i in ip_list:
+            ipid_dict = {}
+            id = serv_dict.get(i)
+            ipid_dict[i] = id
+            serv_list.append(ipid_dict)
+            del ipid_dict
+
+        return (dc_dict, engi_dict, serv_list)
+
+    def get_queryset(self):
+        node_list = self.get_servers()[2]
+        return node_list
+
+    def get_context_data(self, **kwargs):
+        kwargs['dc_dict'] = self.get_servers()[0]
+        kwargs['engi_dict'] = self.get_servers()[1]
+        return super(ManageKeysView, self).get_context_data(**kwargs)
 
 
 @login_required
@@ -96,8 +152,12 @@ def getNodeTopology(request):
                                            arg='role')
 
     for id in minions:
-        id_list = id.split('_')
-        ip = '.'.join(id_list[1:])
+        ip = sapi.masterToMinionContent(tgt=id,
+                                        fun='ip.get_ipv4',
+                                        arg=None).get(id) or '127.0.0.1'
+        if ip == '127.0.0.1':
+            log.error("ManageKeys: {0} does not get local ipv4".format(id))
+
         roles = role_dict.get(id)
         if roles:
             roles_list = roles if isinstance(roles, list) else roles.split(',')

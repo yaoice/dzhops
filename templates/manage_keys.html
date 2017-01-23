@@ -60,14 +60,15 @@
                                 <input id="checkall" type="checkbox" value="checkall" onclick="checkAll(checkall)">全选
                             </label>
                         </th>
-                        <th class="text-center">ID</th>
                         <th class="text-center">Minion ID</th>
                         <th class="text-center">Minion IP</th>
                     </tr>
                 </thead>
                     <tbody id="trtd">
-                        {% if serv_list %}
-                            {% for serv in serv_list %}
+                        {% load paginate_tags %}
+                        {% paginate node_list 10 %}
+                        {% if node_list %}
+                            {% for serv in node_list %}
                                 {% for ip,id in serv.iteritems %}
                                     <tr id="{{ id }}">
                                         <td class="text-center">
@@ -75,7 +76,6 @@
                                                 <input name="minion_id" type="checkbox" value="{{ id }}">
                                             </label>
                                         </td>
-                                        <td class="text-center">{{ forloop.parentloop.counter }}</td>
                                         <td class="text-center">{{ id }}</td>
                                         <td class="text-center">{{ ip }}</td>
                                     </tr>
@@ -85,7 +85,11 @@
                     </tbody>
             </table>
         </div>
+        {% include 'pagination.html' %}
     </div>
+ 
+    
+
     <script>
         $(document).ready(function() {
             $(".form-control").change(function() {
