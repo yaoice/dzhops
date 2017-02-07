@@ -141,6 +141,12 @@ EMAIL_HOST_PASSWORD = 'openstackcloud'
 DEFAULT_FROM_EMAIL = 'OpenStack Deploy Robot <openstack99cloud@163.com>'
 TO_EMAIL = ['yao.xiabing@99cloud.net']
 
+enable_weixin = True
+WX_CORPID = "wx36c0aec757a56951"
+WX_SECRET = "wkO3h2X8RwHIBvoi3Il9Tcu8UAChB9RfiViybkVatEYcLB7t60TyNSUZoccWAXOt"
+TO_USER = "iceyao"
+
+
 # log setting
 try:
     from config_log import LOGGING

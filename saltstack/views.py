@@ -9,8 +9,9 @@ from hostlist.models import DataCenter, HostList
 from record.models import OperateRecord, ReturnRecord
 from saltstack.models import DangerCommand, DeployModules, ConfigUpdate, CommonOperate
 from saltstack.saltapi import SaltAPI
+from saltstack.wxapi import WxAPI
 from saltstack.util import targetToMinionID, datacenterToMinionID, findJob, mysqlReturns, outFormat, manageResult, \
-    moduleDetection, moduleLock, moduleUnlock, isThisRunning, sendEmail
+    moduleDetection, moduleLock, moduleUnlock, isThisRunning, sendEmail, sendWX
 from saltstack.sshutil import *
 from dzhops import settings
 from fabric.api import execute
@@ -441,6 +442,7 @@ def checkDeployProcess(request):
     error = 0
     executed_modules = []
     enable_sendEmail = settings.enable_sendEmail
+    enable_weixin = settings.enable_weixin
 
     if not os.path.exists('/var/www/html/openstack_deploy'):
         os.makedirs('/var/www/html/openstack_deploy')
@@ -464,6 +466,12 @@ def checkDeployProcess(request):
                         except Exception:
                             log.error("OpenStack deploy successed, "
                                       "send email failed")
+                    if process_percent == 100 and enable_weixin:
+                        try:
+                            sendWX('OpenStack安装或扩容成功')
+                        except Exception:
+                            log.error("OpenStack deploy successed, "
+                                      "send weixin failed")
                 elif error_ret in line:
                     error = 1
                     if enable_sendEmail:
@@ -472,6 +480,12 @@ def checkDeployProcess(request):
                         except Exception:
                             log.error("OpenStack deploy failed, "
                                       "send email failed")
+                    if enable_weixin:
+                        try:
+                            sendWX("OpenStack安装或扩容失败，请联系管理员.")
+                        except Exception:
+                            log.error("OpenStack deploy failed, "
+                                      "send weixin failed")
             line += '</br>'
             content += line
         ret_json = json.dumps({'res': 1,

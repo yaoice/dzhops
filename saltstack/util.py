@@ -4,6 +4,7 @@ from hostlist.models import HostList, DataCenter
 from saltstack.models import SaltReturns
 from saltstack.models import ModulesLock
 from saltstack.saltapi import SaltAPI
+from saltstack.wxapi import WxAPI
 from dzhops import settings
 
 import logging, time, json, re, subprocess
@@ -469,3 +470,11 @@ def sendEmail(text_content):
                                  from_email,
                                  to_email)
     msg.send()
+
+
+def sendWX(content):
+    to_user = settings.TO_USER
+    corpid = settings.WX_CORPID
+    secret = settings.WX_SECRET
+    wx = WxAPI(corpid, secret)
+    wx.postRequest(to_user, content)
