@@ -1261,7 +1261,7 @@ function installOpenStack() {
                 } else {
                     if (ret.ret_code===0) {
                         
-                        $('#result').html('\
+                        $('#info').html('\
                         <div class="alert alert-success fade in">\
                             <a href="#" class="close" data-dismiss="alert">&times;</a>\
                             <strong>Success!</strong> 安装程序正在进行中,请查看安装log......\
@@ -1269,7 +1269,7 @@ function installOpenStack() {
                             );
                     } 
                     else if (ret.ret_code===1) {
-                        $('#result').html('\
+                        $('#info').html('\
                             <div class="alert alert-danger fade in">\
                                 <a href="#" class="close" data-dismiss="alert">&times;</a>\
                                 <strong>Error!</strong> 操作失败\
@@ -1277,7 +1277,7 @@ function installOpenStack() {
                          );
                     }
                     else if (ret.ret_code===2) {
-                        $('#result').html('\
+                        $('#info').html('\
                             <div class="alert alert-warning fade in">\
                                 <a href="#" class="close" data-dismiss="alert">&times;</a>\
                                 <strong>Warning!</strong> 安装程序已经在运行中，请查看安装log......\
@@ -1313,7 +1313,7 @@ function addOpenStack() {
                 } else {
                     if (ret.ret_code===0) {
                         
-                        $('#result').html('\
+                        $('#info').html('\
                         <div class="alert alert-success fade in">\
                             <a href="#" class="close" data-dismiss="alert">&times;</a>\
                             <strong>Success!</strong> 扩容程序正在进行中,请查看扩容log......\
@@ -1321,7 +1321,7 @@ function addOpenStack() {
                             );
                     } 
                     else if (ret.ret_code===1) {
-                        $('#result').html('\
+                        $('#info').html('\
                             <div class="alert alert-danger fade in">\
                                 <a href="#" class="close" data-dismiss="alert">&times;</a>\
                                 <strong>Error!</strong> 操作失败\
@@ -1329,7 +1329,7 @@ function addOpenStack() {
                          );
                     }
                     else if (ret.ret_code===2) {
-                        $('#result').html('\
+                        $('#info').html('\
                             <div class="alert alert-warning fade in">\
                                 <a href="#" class="close" data-dismiss="alert">&times;</a>\
                                 <strong>Warning!</strong> 扩容程序已经在运行中，请查看扩容log......\

@@ -338,21 +338,44 @@
     <div class="form-group">
                  <div class="col-sm-offset-9 btn-group" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-primary" onclick="installOpenStack()" id="deployos">开始安装</button>
-                    <button type="button" class="btn btn-primary" onclick="checkInsPro()" id="chkpro">查看安装log</button>
-                   <!--  <input type="submit" class="btn btn-primary" value="添加"> -->
-                 </div>
-   </div>
-   
-   <br/>
-   
-   <div class="col-sm-10 col-sm-offset-1">
-                <div class='bg-primary'>
-                    <h4 id="info"></h4>
-                </div>
+<!--                    <button type="button" class="btn btn-primary" onclick="checkInsPro()" id="chkpro">查看安装log</button> -->
+					<button class="btn btn-primary" data-toggle="modal" onclick="checkInsPro()"
+   					data-target="#processModal" data-backdrop="static" data-keyboard="false">
+   					查看安装log
+					</button>
+
+<div class="modal fade" id="processModal" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close">
+          		<span aria-hidden="true">&times;</span>
+        	</button>
+         </div>
+         <div class="modal-body">
+            <div class="col-sm-10 col-sm-offset-1">
+            	<br/>
                 <div>
                     <p id="result"></p>
                 </div>
+   			</div>
+         </div>
+         <div class="modal-footer">
+         </div>
+      </div>
+	</div>
+</div>
+
+                   <!--  <input type="submit" class="btn btn-primary" value="添加"> -->
+         </div>
    </div>
    
+   <br/>
+	<div class="col-sm-10 col-sm-offset-1">
+         <div>
+            <p id="info"></p>
+         </div>
+   	</div>
 {% endblock %}
 

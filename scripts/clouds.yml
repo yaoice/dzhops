@@ -9,13 +9,23 @@ clouds:
         region_name: RegionOne
 
 rebuild:
-    image: 7cca82e7-0510-485b-b2f6-c6b478b14ad2
+    image: 107cea2c-c460-4deb-942e-2c5e842ed542
     adminPass: yao
     disable_port_security: True
     volume:
         nums: 3
         size: 22
     servers:
-       - test_saltui_deploy-1
-       - test_saltui_deploy-2
-       - test_saltui_deploy-3
+       - openstack_node-1
+       - openstack_node-2
+       - openstack_node-3
+       - openstack_node-4
+       - openstack_node-5
+       - openstack_node-6
+       - openstack_node-7
+       - openstack_node-8
+       - openstack_node-9
+       - openstack_node-10
+       - openstack_node-11
+       - openstack_node-12
+       - openstack_node-13
