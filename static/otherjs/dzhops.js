@@ -842,7 +842,7 @@ function addOpsConfig() {
                     return false;
                 } else {
                     if (ret.ret_code===0) {
-                        $('#result').html('\
+                        $('#info').html('\
                         <div class="alert alert-success fade in">\
                             <a href="#" class="close" data-dismiss="alert">&times;</a>\
                             <strong>Success!</strong> 添加OpenStack节点配置成功\
@@ -851,7 +851,7 @@ function addOpsConfig() {
                     } 
                     
                     else if (ret.ret_code===1) {
-                        $('#result').html('\
+                        $('#info').html('\
                             <div class="alert alert-danger fade in">\
                                 <a href="#" class="close" data-dismiss="alert">&times;</a>\
                                 <strong>Error!</strong> 添加OpenStack节点配置失败\
@@ -1214,7 +1214,7 @@ function createOpsConfig() {
                     return false;
                 } else {
                     if (ret.ret_code===0) {
-                        $('#result').html('\
+                        $('#info').html('\
                         <div class="alert alert-success fade in">\
                             <a href="#" class="close" data-dismiss="alert">&times;</a>\
                             <strong>Success!</strong> 初始化OpenStack环境配置成功\
@@ -1223,7 +1223,7 @@ function createOpsConfig() {
                     } 
                     
                     else if (ret.ret_code===1) {
-                        $('#result').html('\
+                        $('#info').html('\
                             <div class="alert alert-danger fade in">\
                                 <a href="#" class="close" data-dismiss="alert">&times;</a>\
                                 <strong>Error!</strong> 初始化OpenStack环境配置失败\
