@@ -139,7 +139,7 @@ EMAIL_PORT = 25
 EMAIL_HOST_USER = 'openstack99cloud@163.com'
 EMAIL_HOST_PASSWORD = 'openstackcloud'
 DEFAULT_FROM_EMAIL = 'OpenStack Deploy Robot <openstack99cloud@163.com>'
-TO_EMAIL = ['yao.xiabing@99cloud.net']
+TO_EMAIL = ['yao3690093@163.com']
 
 enable_weixin = True
 WX_CORPID = "wx36c0aec757a56951"

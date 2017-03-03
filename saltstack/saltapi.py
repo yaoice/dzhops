@@ -34,7 +34,10 @@ class SaltAPI(object):
         url = self.__url + prefix
         headers = {'X-Auth-Token': self.__token_id}
         req = urllib2.Request(url, obj, headers)
-        opener = urllib2.urlopen(req)
+        try:
+            opener = urllib2.urlopen(req, timeout=1)
+        except Exception:
+            return {'return': [{'id': ""},]}
         content = json.loads(opener.read())
         return content
 

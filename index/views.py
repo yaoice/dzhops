@@ -2,6 +2,7 @@
 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
@@ -117,6 +118,10 @@ def profile(request):
         }
     )
 
+@login_required
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/')
 
 @login_required
 def index(request):

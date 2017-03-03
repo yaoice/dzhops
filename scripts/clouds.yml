@@ -16,16 +16,6 @@ rebuild:
         nums: 3
         size: 22
     servers:
-       - openstack_node-1
-       - openstack_node-2
-       - openstack_node-3
-       - openstack_node-4
-       - openstack_node-5
-       - openstack_node-6
-       - openstack_node-7
-       - openstack_node-8
-       - openstack_node-9
-       - openstack_node-10
-       - openstack_node-11
-       - openstack_node-12
-       - openstack_node-13
+       - controller-node
+       - controller-node2
+       - controller-node3
